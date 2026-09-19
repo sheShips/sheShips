@@ -1,0 +1,58 @@
+/* ============================================================
+   AboutSec — four pillars above the waterline.
+   ============================================================ */
+
+.about {
+  background: linear-gradient(180deg, var(--deep-1) 0%, var(--deep-2) 55%, var(--deep-1) 100%);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  gap: clamp(20px, 2.4vw, 32px);
+}
+
+.pillar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 30px 26px 32px;
+  border-radius: 20px;
+  border: 1px solid var(--hairline);
+  background: linear-gradient(165deg, rgba(20, 113, 130, 0.3), rgba(11, 35, 49, 0.18));
+  overflow: hidden;
+}
+
+/* One accent rail, tinted per pillar. Structural, not decorative:
+   it marks which of the four you're reading. */
+.pillar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--rail, var(--foam));
+}
+
+.pillar:nth-child(1) { --rail: var(--foam); }
+.pillar:nth-child(2) { --rail: var(--sand); }
+.pillar:nth-child(3) { --rail: var(--coral); }
+.pillar:nth-child(4) { --rail: var(--shallow); }
+
+.icon {
+  width: 34px;
+  height: 34px;
+  color: var(--rail);
+}
+
+.pillar h3 {
+  font-size: var(--t-h3);
+  font-weight: 600;
+}
+
+.pillar p {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}

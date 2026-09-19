@@ -1,0 +1,27 @@
+/* ============================================================
+   QuoteSec — the one place the display face goes big.
+   ============================================================ */
+
+.band {
+  position: relative;
+  padding-block: clamp(70px, 10vh, 120px);
+  background:
+    radial-gradient(90% 140% at 50% 0%, rgba(20, 113, 130, 0.55), rgba(11, 35, 49, 0) 70%),
+    var(--deep-1);
+  border-block: 1px solid var(--hairline);
+  overflow: hidden;
+}
+
+.quote {
+  margin: 0;
+  max-width: 24ch;
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 90, 'WONK' 1;
+  font-size: clamp(1.75rem, 4.6vw, 3.4rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+}

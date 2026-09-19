@@ -1,0 +1,204 @@
+/* ============================================================
+   NavBar — a file explorer, because this is a developer club.
+   The site's sections are its files. The panel sits open on the
+   hero, folds away once you scroll in, and re-opens on hover or
+   keyboard focus (that part is pure CSS, so it works without JS).
+   ============================================================ */
+
+.nav {
+  position: fixed;
+  top: calc(18px + env(safe-area-inset-top, 0px));
+  left: 0;
+  right: 0;
+  z-index: 60;
+  padding-inline: var(--gutter);
+  pointer-events: none;
+}
+
+.navInner {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.navInner > * {
+  pointer-events: auto;
+}
+
+.explorer {
+  width: 214px;
+  border-radius: 15px;
+  border: 1px solid var(--hairline);
+  background: rgba(9, 29, 41, 0.62);
+  backdrop-filter: blur(16px) saturate(1.25);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  box-shadow: 0 20px 44px -26px rgba(3, 14, 22, 0.95);
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.explorer:hover,
+.explorer:focus-within {
+  border-color: rgba(111, 199, 211, 0.42);
+  background: rgba(9, 29, 41, 0.76);
+}
+
+.explorerRoot {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 11px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.navLogo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex: none;
+}
+
+.repo {
+  flex: 1;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.repo i {
+  font-style: normal;
+  color: var(--foam);
+}
+
+.caret {
+  flex: none;
+  color: var(--ink-faint);
+  transition: transform 0.4s var(--ease-out);
+}
+
+.isOpen .caret,
+.explorer:hover .caret,
+.explorer:focus-within .caret {
+  transform: rotate(90deg);
+}
+
+/* grid-rows trick: animates to auto height with no JS measuring */
+.explorerBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s var(--ease-out);
+}
+
+.isOpen .explorerBody,
+.explorer:hover .explorerBody,
+.explorer:focus-within .explorerBody {
+  grid-template-rows: 1fr;
+}
+
+.tree {
+  overflow: hidden;
+  min-height: 0;
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0 8px 9px 8px;
+}
+
+/* the rail down the left, and a tick out to each file */
+.tree::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 0;
+  bottom: 22px;
+  width: 1px;
+  background: rgba(111, 199, 211, 0.26);
+}
+
+.tree li {
+  position: relative;
+  padding-left: 22px;
+}
+
+.tree li::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  background: rgba(111, 199, 211, 0.26);
+}
+
+.tree a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  margin: 1px 0;
+  border-radius: 8px;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: background-color 0.22s ease, color 0.22s ease;
+}
+
+.tree a:hover,
+.tree a.active {
+  background: rgba(111, 199, 211, 0.14);
+  color: var(--ink);
+}
+
+.ficon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+}
+
+/* editors tint by file type — so does this one */
+.tree li:nth-child(1) .ficon { color: var(--foam); }
+.tree li:nth-child(2) .ficon { color: var(--sand); }
+.tree li:nth-child(3) .ficon { color: var(--coral); }
+.tree li:nth-child(4) .ficon { color: var(--shallow); }
+
+.fname {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ext {
+  color: var(--ink-faint);
+}
+
+@media (max-width: 640px) {
+  .explorer {
+    width: 178px;
+    font-size: 0.75rem;
+  }
+
+  .explorerRoot {
+    padding: 8px 9px;
+    gap: 7px;
+  }
+
+  .tree li { padding-left: 19px; }
+  .tree::before { left: 16px; }
+  .tree li::before { left: 9px; width: 8px; }
+
+  .nav :global(.btn) {
+    padding: 10px 15px;
+    font-size: 0.8125rem;
+  }
+}

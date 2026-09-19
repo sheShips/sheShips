@@ -1,0 +1,104 @@
+/* ============================================================
+   Footer — the water closing over the page.
+   ============================================================ */
+
+.footer {
+  position: relative;
+  padding-top: clamp(120px, 16vh, 190px);
+  padding-bottom: calc(46px + env(safe-area-inset-bottom, 0px));
+  background: linear-gradient(180deg, var(--deep-1) 0%, #0a1f2c 60%, #081a26 100%);
+  overflow: hidden;
+}
+
+.waves {
+  position: absolute;
+  left: -10%;
+  top: 0;
+  width: 120%;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.waves svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  text-align: center;
+}
+
+.mark {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 90, 'WONK' 1;
+  font-size: clamp(1.9rem, 5.5vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.mark em {
+  color: var(--sand);
+  font-style: italic;
+}
+
+.meetup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(111, 199, 211, 0.35);
+  background: rgba(111, 199, 211, 0.09);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s var(--ease-out);
+}
+
+.meetup:hover {
+  background: rgba(111, 199, 211, 0.18);
+  border-color: var(--foam);
+  transform: translateY(-2px);
+}
+
+.meetup svg {
+  flex: none;
+}
+
+.colophon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding-top: 28px;
+  border-top: 1px solid var(--hairline);
+  width: min(100%, 420px);
+  font-size: var(--t-small);
+  color: var(--ink-faint);
+}
+
+.colophon a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(111, 199, 211, 0.3);
+  padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.colophon a:hover {
+  color: var(--sand);
+  border-color: var(--sand);
+}
+
+.sponsor a:hover {
+  color: var(--foam);
+  border-color: var(--foam);
+}

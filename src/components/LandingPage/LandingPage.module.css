@@ -1,0 +1,226 @@
+/* ============================================================
+   LandingPage — sunset over water.
+   The logo carries its own sun, so this section draws no second
+   one: the mark IS the sun, with a haze behind it and a glint
+   running down onto the waves.
+   ============================================================ */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(700px, 90svh);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+  padding-top: 124px;
+}
+
+/* ---------- sky ---------------------------------------------- */
+
+.sky {
+  position: absolute;
+  inset: 0;
+  z-index: -6;
+  background:
+    radial-gradient(120% 78% at 50% 86%, rgba(253, 188, 105, 0.3) 0%, rgba(239, 117, 100, 0.22) 22%, rgba(20, 113, 130, 0) 58%),
+    linear-gradient(180deg, #081a26 0%, var(--deep-2) 34%, var(--tide) 76%, #17849a 100%);
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  z-index: -5;
+  opacity: 0.5;
+}
+
+.sunGlow {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(120vw, 1200px);
+  aspect-ratio: 2.4 / 1;
+  max-width: 100%;
+  transform: translate(-50%, -50%);
+  z-index: -5;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(253, 188, 105, 0.17), rgba(239, 117, 100, 0.07) 44%, rgba(239, 117, 100, 0) 70%);
+  filter: blur(40px);
+}
+
+/* sun's reflected path on the water — a hint of shimmer, not a ladder */
+.glint {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  bottom: 6%;
+  width: min(16vw, 190px);
+  transform: translateX(-50%);
+  z-index: -3;
+  opacity: 0.5;
+  background: linear-gradient(180deg, rgba(253, 188, 105, 0.34), rgba(253, 188, 105, 0) 78%);
+  filter: blur(26px);
+  mask-image: repeating-linear-gradient(180deg, #000 0 9px, transparent 9px 22px);
+  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0 9px, transparent 9px 22px);
+}
+
+/* ---------- wave bands: each parallaxes at its own rate ------- */
+
+.sea {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 46%;
+  min-height: 240px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.sea::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 22%;
+  background: linear-gradient(180deg, rgba(11, 35, 49, 0), var(--deep-1) 82%);
+}
+
+.wave {
+  position: absolute;
+  left: -12%;
+  width: 124%;
+  display: block;
+}
+
+.wave svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.wave1 { bottom: 52%; }
+.wave2 { bottom: 34%; }
+.wave3 { bottom: 16%; }
+.wave4 { bottom: -2%; }
+
+/* ---------- hero content -------------------------------------- */
+
+.heroInner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 26px;
+  align-self: center;
+  padding-bottom: clamp(120px, 19vh, 220px);
+}
+
+.logoStage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(272px, 54vw);
+  margin-bottom: 6px;
+}
+
+/* warm haze sitting directly behind the mark's own sun */
+.halo {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 230%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(253, 188, 105, 0.34), rgba(239, 117, 100, 0.16) 38%, rgba(239, 117, 100, 0) 66%);
+  filter: blur(18px);
+  pointer-events: none;
+}
+
+.logo {
+  position: relative;
+  width: 100%;
+  height: auto;
+  display: block;
+  will-change: transform;
+  filter: drop-shadow(0 26px 38px rgba(6, 22, 32, 0.55));
+}
+
+.ripple {
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  width: 80%;
+  aspect-ratio: 4.4 / 1;
+  transform: translateX(-50%) scale(0.3);
+  border: 1.5px solid rgba(111, 199, 211, 0.55);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ripple2 {
+  width: 104%;
+  aspect-ratio: 5.6 / 1;
+  border-color: rgba(253, 188, 105, 0.4);
+}
+
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 58ch;
+}
+
+.heroCopy h1 {
+  font-size: var(--t-display);
+  font-variation-settings: 'SOFT' 70, 'WONK' 1;
+  font-weight: 500;
+}
+
+.heroCopy h1 em {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--sand);
+  font-variation-settings: 'SOFT' 100, 'WONK' 1;
+}
+
+.heroSub {
+  max-width: 48ch;
+  font-size: clamp(1rem, 1.4vw, 1.1875rem);
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ---------- scroll cue ---------------------------------------- */
+
+.cue {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--t-eyebrow);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.cueLine {
+  width: 1px;
+  height: 42px;
+  background: linear-gradient(180deg, var(--foam), transparent);
+}

@@ -1,0 +1,215 @@
+/* ============================================================
+   SHE SHIPS — global tokens and shared primitives
+   Anything used by more than one component lives here; everything
+   else is scoped in that component's .module.css.
+   ============================================================ */
+
+:root {
+  /* brand */
+  --abyss:   #113646;
+  --tide:    #147182;
+  --shallow: #4b8d9b;
+  --foam:    #6fc7d3;
+  --sand:    #fdbc69;
+  --coral:   #ef7564;
+  --white:   #ffffff;
+
+  /* derived neutrals — biased toward the teal, never pure grey */
+  --ink:        #f2fafb;
+  --ink-soft:   rgba(242, 250, 251, 0.72);
+  --ink-faint:  rgba(242, 250, 251, 0.44);
+  --hairline:   rgba(111, 199, 211, 0.22);
+  --glass:      rgba(17, 54, 70, 0.55);
+  --glass-lift: rgba(20, 113, 130, 0.28);
+
+  --deep-1: #0b2331;
+  --deep-2: #113646;
+  --deep-3: #14586b;
+
+  /* semantic — separate from the accent hue on purpose */
+  --danger: #ef7564;
+  --ok:     #6fc7d3;
+
+  /* type scale */
+  --t-display: clamp(2.35rem, 5.6vw, 4.5rem);
+  --t-h2:      clamp(1.9rem, 4.4vw, 3.25rem);
+  --t-h3:      clamp(1.15rem, 2vw, 1.5rem);
+  --t-body:    clamp(1rem, 1.15vw, 1.125rem);
+  --t-small:   0.8125rem;
+  --t-eyebrow: 0.6875rem;
+
+  --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-body: 'Karla', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  --gutter: clamp(20px, 5vw, 76px);
+  --maxw: 1240px;
+
+  --ease-out: cubic-bezier(0.2, 0.9, 0.3, 1);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--deep-1);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 60, 'WONK' 1;
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 2px solid var(--sand);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- shared layout ---------------------------------- */
+
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(90px, 13vh, 150px);
+}
+
+.section > .wrap {
+  position: relative;
+  z-index: 1;
+}
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 62ch;
+  margin-bottom: clamp(44px, 6vh, 72px);
+}
+
+.section-head h2 {
+  font-size: var(--t-h2);
+}
+
+/* ---------- shared type treatments -------------------------- */
+
+.eyebrow {
+  font-size: var(--t-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--foam);
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--foam));
+  flex: none;
+}
+
+.eyebrow-center {
+  justify-content: center;
+}
+
+/* ---------- button primitive -------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55em;
+  padding: 11px 22px;
+  border-radius: 999px;
+  border: 0;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--abyss);
+  background: linear-gradient(135deg, var(--sand), var(--coral));
+  box-shadow: 0 6px 24px -8px rgba(239, 117, 100, 0.75);
+  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -8px rgba(239, 117, 100, 0.9);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--hairline);
+  box-shadow: none;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: var(--glass-lift);
+  box-shadow: none;
+}
+
+/* ---------- motion safety ----------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

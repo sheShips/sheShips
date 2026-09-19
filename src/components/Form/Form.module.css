@@ -1,0 +1,300 @@
+/* ============================================================
+   Form — join the club.
+   Sits on the deepest ground on the page so it reads as the
+   place the whole scroll has been heading.
+   ============================================================ */
+
+.join {
+  background: linear-gradient(180deg, var(--deep-1), #0a2634 55%, var(--deep-1));
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  position: relative;
+  border-radius: 22px;
+  border: 1px solid var(--hairline);
+  background: linear-gradient(170deg, rgba(20, 113, 130, 0.26), rgba(11, 35, 49, 0.55));
+  padding: clamp(22px, 3vw, 38px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 560px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--t-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--foam);
+}
+
+.optional {
+  color: var(--ink-faint);
+  letter-spacing: 0.08em;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+  background: rgba(8, 26, 38, 0.55);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(242, 250, 251, 0.34);
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: rgba(111, 199, 211, 0.38);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--foam);
+  background: rgba(8, 26, 38, 0.75);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.select {
+  appearance: none;
+  cursor: pointer;
+  /* caret drawn in CSS so it matches the theme in every browser */
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-faint) 50%),
+    linear-gradient(135deg, var(--ink-faint) 50%, transparent 50%);
+  background-position: calc(100% - 19px) 55%, calc(100% - 14px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 38px;
+}
+
+.select option {
+  background: var(--deep-2);
+  color: var(--ink);
+}
+
+.invalid {
+  border-color: var(--danger);
+}
+
+.error {
+  font-size: var(--t-small);
+  color: var(--danger);
+}
+
+/* ---------- open-for-work checkbox ----------------------------- */
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--hairline);
+  background: rgba(111, 199, 211, 0.06);
+  cursor: pointer;
+  transition: border-color 0.22s ease, background-color 0.22s ease;
+}
+
+.check:hover {
+  border-color: rgba(111, 199, 211, 0.4);
+  background: rgba(111, 199, 211, 0.11);
+}
+
+.checkOn {
+  border-color: var(--sand);
+  background: rgba(253, 188, 105, 0.11);
+}
+
+.check input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.box {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: 6px;
+  border: 1.5px solid var(--hairline);
+  display: grid;
+  place-items: center;
+  color: var(--abyss);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.checkOn .box {
+  background: linear-gradient(135deg, var(--sand), var(--coral));
+  border-color: transparent;
+}
+
+.check input:focus-visible + .box {
+  outline: 2px solid var(--sand);
+  outline-offset: 2px;
+}
+
+.checkCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.checkTitle {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: var(--ink);
+}
+
+.checkHint {
+  font-size: var(--t-small);
+  color: var(--ink-faint);
+  line-height: 1.5;
+}
+
+/* ---------- submit -------------------------------------------- */
+
+.submit {
+  align-self: flex-start;
+  padding: 13px 28px;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid rgba(17, 54, 70, 0.35);
+  border-top-color: var(--abyss);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.formNote {
+  font-size: var(--t-small);
+  color: var(--ink-faint);
+}
+
+/* ---------- success ------------------------------------------- */
+
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+  padding-block: clamp(14px, 3vh, 34px);
+}
+
+.tick {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--abyss);
+  background: linear-gradient(135deg, var(--sand), var(--coral));
+  box-shadow: 0 14px 34px -14px rgba(239, 117, 100, 0.8);
+}
+
+.success h3 {
+  font-size: var(--t-h3);
+}
+
+.successCopy {
+  max-width: 44ch;
+  font-size: 0.9375rem;
+}
+
+.handoff {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 6px;
+  padding-top: 22px;
+  border-top: 1px solid var(--hairline);
+}
+
+.handoffLabel {
+  font-size: var(--t-eyebrow);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--foam);
+}
+
+.reset {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: var(--t-small);
+  color: var(--ink-faint);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.reset:hover {
+  color: var(--ink-soft);
+}
