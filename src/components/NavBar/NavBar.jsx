@@ -32,11 +32,13 @@ function FileIcon({ className }) {
 
 export default function NavBar() {
   const scope = useRef(null)
-  // open at rest so the sections are visible without interaction
-  const [isOpen, setIsOpen] = useState(true)
+  const explorerRef = useRef(null)
+  // closed at rest: it opens on hover (mouse), tap/click, or keyboard focus
+  const [isOpen, setIsOpen] = useState(false)
   const [activeId, setActiveId] = useState(null)
-  // once the visitor decides for themselves, stop auto-collapsing on them
+  // opened by a click/tap stays open until dismissed; hover-opened closes on leave
   const pinnedRef = useRef(false)
+  const timerRef = useRef(null)
 
   useGsap(scope, () => {
     if (prefersReducedMotion()) return
@@ -49,21 +51,83 @@ export default function NavBar() {
     })
   })
 
-  /* collapse once you scroll into the page; start collapsed on phones */
-  useEffect(() => {
-    const narrow = window.matchMedia('(max-width: 640px)')
-    if (narrow.matches) setIsOpen(false)
+  const clearTimer = () => {
+    if (timerRef.current) window.clearTimeout(timerRef.current)
+    timerRef.current = null
+  }
 
-    const hero = document.querySelector('[data-hero]')
-    const onScroll = () => {
-      if (pinnedRef.current || narrow.matches) return
-      const threshold = hero ? hero.offsetHeight * 0.55 : 400
-      setIsOpen(window.scrollY < threshold)
+  const close = () => {
+    clearTimer()
+    pinnedRef.current = false
+    setIsOpen(false)
+  }
+
+  /* Hover only means something on a real pointer — on touch screens a
+     tap fires fake mouseenter events, which is what made it stick open. */
+  const canHover = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches
+
+  // a tiny open delay stops it flashing open as the cursor passes over;
+  // a longer close delay forgives a cursor that slips off the edge
+  const onPointerEnter = (e) => {
+    if (e.pointerType !== 'mouse' || !canHover()) return
+    clearTimer()
+    timerRef.current = window.setTimeout(() => setIsOpen(true), 70)
+  }
+
+  const onPointerLeave = (e) => {
+    if (e.pointerType !== 'mouse' || pinnedRef.current) return
+    clearTimer()
+    timerRef.current = window.setTimeout(() => setIsOpen(false), 260)
+  }
+
+  // click/tap: open-and-pin, or close. If hover already opened it, a click
+  // pins it rather than snapping it shut under the cursor.
+  const toggle = () => {
+    clearTimer()
+    if (isOpen && !pinnedRef.current) {
+      pinnedRef.current = true
+      return
     }
+    pinnedRef.current = !isOpen
+    setIsOpen(!isOpen)
+  }
 
+  /* keyboard: tabbing in opens it, tabbing out closes it */
+  const onFocus = (e) => {
+    if (e.target.matches(':focus-visible')) setIsOpen(true)
+  }
+  const onBlur = (e) => {
+    if (!explorerRef.current?.contains(e.relatedTarget)) close()
+  }
+
+  /* Escape, a click anywhere else, or scrolling away all close it */
+  useEffect(() => {
+    if (!isOpen) return undefined
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        // move focus home first, then close — otherwise the focus event reopens it
+        explorerRef.current?.querySelector('button')?.focus()
+        close()
+      }
+    }
+    const onDown = (e) => {
+      if (!explorerRef.current?.contains(e.target)) close()
+    }
+    const startY = window.scrollY
+    const onScroll = () => {
+      if (Math.abs(window.scrollY - startY) > 120) close()
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('pointerdown', onDown)
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerdown', onDown)
+      window.removeEventListener('scroll', onScroll)
+    }
+  }, [isOpen])
+
+  useEffect(() => clearTimer, [])
 
   /* mark the file you're currently "in", the way an editor does */
   useEffect(() => {
@@ -83,15 +147,17 @@ export default function NavBar() {
     return () => observer.disconnect()
   }, [])
 
-  const toggle = () => {
-    pinnedRef.current = true
-    setIsOpen((open) => !open)
-  }
-
   return (
     <header className={styles.nav} ref={scope}>
       <nav className={styles.navInner} aria-label="Primary">
-        <div className={`${styles.explorer} ${isOpen ? styles.isOpen : ''}`}>
+        <div
+          ref={explorerRef}
+          className={`${styles.explorer} ${isOpen ? styles.isOpen : ''}`}
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
+          onFocus={onFocus}
+          onBlur={onBlur}
+        >
           <button
             type="button"
             className={styles.explorerRoot}
@@ -128,6 +194,8 @@ export default function NavBar() {
                     aria-label={file.label}
                     aria-current={activeId === file.id ? 'true' : undefined}
                     className={activeId === file.id ? styles.active : undefined}
+                    onClick={close}
+                    tabIndex={isOpen ? undefined : -1}
                   >
                     <FileIcon className={styles.ficon} />
                     <span className={styles.fname}>

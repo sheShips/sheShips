@@ -90,8 +90,8 @@ export default function Form() {
             <p className="eyebrow">Come aboard</p>
             <h2 className="lead">Tell us you&rsquo;re in.</h2>
             <p>
-              We&rsquo;ll email you when the first meetup has a date and a place. That&rsquo;s it
-              &mdash; no newsletter, no drip campaign, nothing you have to unsubscribe from twice.
+              Every meetup, workshop and hack day goes up here the moment it&rsquo;s set, so you
+              never miss one. Leave your email and we&rsquo;ll keep you in the loop.
             </p>
           </div>
 
@@ -115,8 +115,8 @@ export default function Form() {
 
                 <h3 className="lead">You&rsquo;re on the crew list</h3>
                 <p className={styles.successCopy}>
-                  We&rsquo;ll be in touch as soon as the first date is set. Probably sooner than you
-                  expect.
+                  We&rsquo;ll keep you posted on what&rsquo;s coming up. Keep an eye on your
+                  inbox.
                 </p>
 
                 <div className={styles.handoff}>

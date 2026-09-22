@@ -17,6 +17,12 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npm run build
+        env:
+          # Settings -> Secrets and variables -> Actions. The key ends up in the
+          # public bundle either way; its protection is the HTTP-referrer and
+          # Calendar-API-only restriction set in Google Cloud.
+          VITE_GCAL_ID: ${{ vars.VITE_GCAL_ID }}
+          VITE_GCAL_KEY: ${{ secrets.VITE_GCAL_KEY }}
       - run: cp dist/index.html dist/404.html
       - uses: actions/upload-pages-artifact@v3
         with:

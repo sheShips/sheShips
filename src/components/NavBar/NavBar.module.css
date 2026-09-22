@@ -1,8 +1,9 @@
 /* ============================================================
    NavBar — a file explorer, because this is a developer club.
-   The site's sections are its files. The panel sits open on the
-   hero, folds away once you scroll in, and re-opens on hover or
-   keyboard focus (that part is pure CSS, so it works without JS).
+   The site's sections are its files. Closed at rest; opens on
+   hover (mouse only, with a short intent delay), tap/click, or
+   keyboard focus. Open/close state is owned by NavBar.jsx so hover,
+   touch and focus can't fight each other.
    ============================================================ */
 
 .nav {
@@ -43,8 +44,7 @@
   transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-.explorer:hover,
-.explorer:focus-within {
+.isOpen {
   border-color: rgba(111, 199, 211, 0.42);
   background: rgba(9, 29, 41, 0.76);
 }
@@ -87,9 +87,7 @@
   transition: transform 0.4s var(--ease-out);
 }
 
-.isOpen .caret,
-.explorer:hover .caret,
-.explorer:focus-within .caret {
+.isOpen .caret {
   transform: rotate(90deg);
 }
 
@@ -97,12 +95,34 @@
 .explorerBody {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.45s var(--ease-out);
+  transition: grid-template-rows 0.32s var(--ease-out);
 }
 
-.isOpen .explorerBody,
-.explorer:hover .explorerBody,
-.explorer:focus-within .explorerBody {
+.tree {
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.isOpen .tree {
+  opacity: 1;
+  transition-delay: 0.06s;
+}
+
+.explorerRoot:focus-visible {
+  outline: 2px solid var(--foam);
+  outline-offset: -2px;
+  border-radius: 14px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .explorerRoot:hover .caret { color: var(--foam); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .explorerBody, .tree, .caret { transition: none; }
+}
+
+.isOpen .explorerBody {
   grid-template-rows: 1fr;
 }
 

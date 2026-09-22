@@ -56,19 +56,39 @@ export default function EventSec() {
   useEffect(() => {
     if (!isCalendarConfigured()) return undefined
 
-    const controller = new AbortController()
-    fetchUpcomingEvents({ signal: controller.signal })
-      .then((items) => {
-        setEvents(items)
-        setState(items.length ? 'ready' : 'empty')
-      })
-      .catch((error) => {
-        if (error.name === 'AbortError') return
-        console.error('[She Ships] calendar failed to load', error)
-        setState('error')
-      })
+    let controller
+    const load = () => {
+      controller?.abort()
+      controller = new AbortController()
+      fetchUpcomingEvents({ signal: controller.signal })
+        .then((items) => {
+          setEvents(items)
+          setState(items.length ? 'ready' : 'empty')
+        })
+        .catch((error) => {
+          if (error.name === 'AbortError') return
+          console.error('[She Ships] calendar failed to load', error)
+          // keep showing what we already have if a refresh fails
+          setState((current) => (current === 'ready' ? current : 'error'))
+        })
+    }
 
-    return () => controller.abort()
+    /* Live: re-check every 5 minutes while the page is open, and straight
+       away when someone returns to a tab they left in the background. */
+    load()
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === 'visible') load()
+    }, 5 * 60 * 1000)
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') load()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+
+    return () => {
+      controller?.abort()
+      window.clearInterval(interval)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
   }, [])
 
   const eventsByDay = useMemo(() => {
@@ -117,12 +137,12 @@ export default function EventSec() {
         <div className="section-head" data-reveal-head>
           <p className="eyebrow">What&rsquo;s on</p>
           <h2 className="lead">
-            Come to the first one.
+            See what&rsquo;s coming up.
           </h2>
           <p>
-            We&rsquo;re picking dates and places across the region &mdash; Sarasota, Fort Myers,
-            Naples, everywhere between. Get on the list below and you&rsquo;ll know before anyone
-            else.
+            Meetups, workshops and hack days across the region &mdash; Sarasota, Fort Myers,
+            Naples, everywhere between. We update this calendar as plans are set, so you
+            don&rsquo;t miss anything.
           </p>
         </div>
 
@@ -324,10 +344,10 @@ function EmptyState({ state }) {
         <path d="M12 13V3" />
         <path d="M12 4l6 4-6 3z" />
       </svg>
-      <p className={styles.emptyTitle}>Nothing on the books yet</p>
+      <p className={styles.emptyTitle}>Nothing on the books right now</p>
       <p className={styles.emptyCopy}>
-        We&rsquo;re working out the first date and place now. Get on the list and you&rsquo;ll hear
-        about it before it goes anywhere else.
+        New dates show up here as soon as they&rsquo;re set. Get on the list and you&rsquo;ll hear
+        about them too.
       </p>
       <a className="btn" href="#join">
         Get on the list

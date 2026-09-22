@@ -29,8 +29,12 @@
 .stars {
   position: absolute;
   inset: 0;
+  /* a canvas doesn't stretch to inset:0 on its own — without these it
+     stays 300×150 and every star lands in the top-left corner */
+  width: 100%;
+  height: 100%;
   z-index: -5;
-  opacity: 0.5;
+  opacity: 0.8;
 }
 
 .sunGlow {
@@ -130,7 +134,7 @@
 .halo {
   position: absolute;
   left: 50%;
-  top: 40%;
+  top: 35%;
   width: 230%;
   aspect-ratio: 1;
   transform: translate(-50%, -50%);
@@ -146,7 +150,10 @@
   height: auto;
   display: block;
   will-change: transform;
-  filter: drop-shadow(0 26px 38px rgba(6, 22, 32, 0.55));
+  /* A warm glow that follows the mark's own outline, so the sun is lit
+     all the way round. (The old dark drop-shadow sat below the mark and
+     blacked out the lower half of the sun's glow.) */
+  filter: drop-shadow(0 0 14px rgba(253, 188, 105, 0.5)) drop-shadow(0 0 42px rgba(239, 117, 100, 0.28));
 }
 
 .ripple {
@@ -201,26 +208,3 @@
   justify-content: center;
 }
 
-/* ---------- scroll cue ---------------------------------------- */
-
-.cue {
-  position: absolute;
-  left: 50%;
-  bottom: 26px;
-  transform: translateX(-50%);
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 9px;
-  font-size: var(--t-eyebrow);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.cueLine {
-  width: 1px;
-  height: 42px;
-  background: linear-gradient(180deg, var(--foam), transparent);
-}

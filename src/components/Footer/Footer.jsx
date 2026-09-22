@@ -72,15 +72,15 @@ export default function Footer() {
 
         <div className={styles.colophon}>
           <p>
-            Made by{' '}
+            Created by{' '}
             <a href="https://whelkworks.com" target="_blank" rel="noopener noreferrer">
               Whelk Works
             </a>
           </p>
           <p className={styles.sponsor}>
-            Sponsored by{' '}
+            Presented by{' '}
             <a href="https://securipolis.com" target="_blank" rel="noopener noreferrer">
-              Securipolis.com
+              Securipolis
             </a>
           </p>
         </div>

@@ -44,7 +44,7 @@ export function formatTime(date) {
      2. Copy the Calendar ID from "Integrate calendar"
      3. Google Cloud console -> enable the Calendar API -> create an
         API key -> restrict it to the Calendar API and this domain
-     4. Put both in .env:
+     4. Put both in .env (local) and in the repo's Actions settings (deploy):
           VITE_GCAL_ID=…@group.calendar.google.com
           VITE_GCAL_KEY=…
 
@@ -82,6 +82,14 @@ export function getCalendarViewUrl() {
  * isn't connected yet or has nothing on it — both are the same thing
  * as far as the UI is concerned.
  */
+/* All-day events arrive as a bare "2026-10-03". `new Date()` reads that as
+   UTC midnight, which in Florida is the evening before — so the event would
+   land on the wrong day. Parse it as a local date instead. */
+function parseLocalDate(ymd) {
+  const [y, m, d] = ymd.split('-').map(Number)
+  return new Date(y, m - 1, d)
+}
+
 export async function fetchUpcomingEvents({ maxResults = 50, signal } = {}) {
   if (!isCalendarConfigured()) return []
 
@@ -99,7 +107,7 @@ export async function fetchUpcomingEvents({ maxResults = 50, signal } = {}) {
   const data = await response.json()
   return (data.items || []).map((item) => ({
     id: item.id,
-    start: new Date(item.start.dateTime || item.start.date),
+    start: item.start.dateTime ? new Date(item.start.dateTime) : parseLocalDate(item.start.date),
     allDay: !item.start.dateTime,
     title: item.summary || 'Untitled',
     location: item.location || 'Location TBA',

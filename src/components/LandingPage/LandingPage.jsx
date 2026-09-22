@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap, prefersReducedMotion } from '../../lib/motion'
 import { useGsap } from '../../hooks/useGsap'
+import { nightFactor } from '../../lib/sky'
 import logo from '../../assets/logo.png'
 import styles from './LandingPage.module.css'
 
@@ -54,12 +55,22 @@ export default function LandingPage() {
     const reduced = prefersReducedMotion()
     let points = []
     let frame
+    let clock
+
+    /* How dark it is right now. `target` follows the real sun (checked
+       every minute); `night` eases toward it so dusk fades in rather
+       than snapping. Daytime keeps a faint handful so the sky never
+       looks empty. */
+    let target = nightFactor()
+    let night = target
+    const visibleShare = () => 0.25 + 0.75 * night   // how many stars are out
+    const brightness = () => 0.5 + 0.5 * night        // how bright they are
 
     const size = () => {
       const rect = canvas.getBoundingClientRect()
       canvas.width = rect.width * dpr
       canvas.height = rect.height * dpr
-      const count = Math.round((rect.width * rect.height) / 9000)
+      const count = Math.round((rect.width * rect.height) / 7000)
       points = Array.from({ length: count }, () => ({
         x: Math.random() * rect.width,
         // squared distribution keeps them near the top of the sky
@@ -68,36 +79,59 @@ export default function LandingPage() {
         a: Math.random() * 0.55 + 0.15,
         tw: Math.random() * 0.02 + 0.004,
         p: Math.random() * Math.PI * 2,
+        // rank: the brightest stars come out first at dusk
+        k: Math.random(),
       }))
+      // brighter stars get the low ranks
+      points.forEach((s) => { s.k = s.k * 0.6 + (1 - s.a / 0.7) * 0.4 })
       draw(0)
     }
 
     const draw = (t) => {
       const rect = canvas.getBoundingClientRect()
+      const share = visibleShare()
+      const glow = brightness()
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, rect.width, rect.height)
       points.forEach((s, i) => {
-        const alpha = reduced ? s.a : s.a * (0.6 + 0.4 * Math.sin(t * s.tw + s.p))
-        ctx.globalAlpha = Math.max(alpha, 0)
+        // soft edge so stars fade in one by one as `share` rises
+        const out = Math.min(Math.max((share - s.k) * 10, 0), 1)
+        if (out <= 0) return
+        const twinkle = reduced ? 1 : 0.6 + 0.4 * Math.sin(t * s.tw + s.p)
+        ctx.globalAlpha = Math.max(s.a * twinkle * glow * out, 0)
         ctx.fillStyle = i % 9 === 0 ? '#fdbc69' : '#ffffff'
         ctx.beginPath()
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+        ctx.arc(s.x, s.y, s.r * (0.85 + 0.25 * night), 0, Math.PI * 2)
         ctx.fill()
       })
       ctx.globalAlpha = 1
     }
 
     const loop = (t) => {
+      night += (target - night) * 0.02
       draw(t)
       frame = requestAnimationFrame(loop)
     }
 
+    const tick = () => {
+      target = nightFactor()
+      if (reduced) {
+        night = target
+        draw(0)
+      }
+    }
+
     size()
     window.addEventListener('resize', size)
+    clock = window.setInterval(tick, 60000)
+    // coming back to a tab left open for hours should show the right sky
+    document.addEventListener('visibilitychange', tick)
     if (!reduced) frame = requestAnimationFrame(loop)
 
     return () => {
       window.removeEventListener('resize', size)
+      document.removeEventListener('visibilitychange', tick)
+      window.clearInterval(clock)
       if (frame) cancelAnimationFrame(frame)
     }
   }, [])
@@ -161,7 +195,6 @@ export default function LandingPage() {
 
     intro.add(sail, 0.25)
     intro.from(`.${styles.heroCopy} > *`, { y: 26, opacity: 0, duration: 0.9, stagger: 0.12 }, '-=1.9')
-    intro.from(`.${styles.cue}`, { opacity: 0, y: 14, duration: 0.8 }, '-=0.7')
 
     /* parallax — every layer drifts at its own rate */
     const track = {
@@ -248,10 +281,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <div className={styles.cue} aria-hidden="true">
-        <span className={styles.cueLine} />
-        Scroll
-      </div>
     </section>
   )
 }
