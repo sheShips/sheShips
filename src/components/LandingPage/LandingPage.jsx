@@ -267,8 +267,10 @@ export default function LandingPage() {
             Nobody ships <em>alone</em>.
           </h1>
           <p className={styles.heroSub}>
-            A new group for female developers across Southwest Florida &mdash; Sarasota down to
-            Naples. Bring whatever you&rsquo;re working on, or nothing at all.
+            A group for female devs around Southwest Florida. Just starting out or years in, pull
+            up a chair. Bring the bug you&rsquo;ve been staring at all week and the project you
+            haven&rsquo;t shown anyone yet. Someone here has been there, and she&rsquo;ll stick
+            around to celebrate when it finally works.
           </p>
           <div className={styles.heroActions}>
             <a className="btn" href="#events">
