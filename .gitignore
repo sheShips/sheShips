@@ -2,3 +2,8 @@ node_modules
 dist
 .env
 .DS_Store
+upload-to-godaddy
+src/generated/
+Claude outputs/
+preview/
+*.zip

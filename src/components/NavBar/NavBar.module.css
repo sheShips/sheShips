@@ -202,6 +202,65 @@
   color: var(--ink-faint);
 }
 
+/* ---------- "Get involved" -------------------------------------
+   Solid sand rather than the shared gradient, so it reads as a
+   firm button against the glassy nav. Hover/focus: lifts and glows. */
+
+.nav .cta {
+  padding: 13px 28px;
+  font-size: 0.9375rem;
+  /* a sunset gradient that drifts slowly back and forth, like the boat's
+     bob, so it catches the corner of the eye without shouting */
+  background: linear-gradient(110deg, var(--sand) 0%, #ffcf8c 22%, var(--coral) 50%, #ffcf8c 78%, var(--sand) 100%);
+  background-size: 260% 100%;
+  background-position: 0% 50%;
+  color: var(--abyss);
+  box-shadow: 0 4px 14px -6px rgba(253, 188, 105, 0.55);
+  transition: transform 0.28s var(--ease-out), box-shadow 0.28s ease, background-color 0.28s ease;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .nav .cta {
+    animation: ctaDrift 6.8s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes ctaDrift {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+
+.nav .cta:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .nav .cta:hover:not(:disabled) {
+    /* no background swap here, so the drifting gradient keeps moving */
+    transform: translateY(-4px);
+    box-shadow:
+      0 0 0 1px rgba(253, 188, 105, 0.35),
+      0 10px 26px -6px rgba(253, 188, 105, 0.75),
+      0 0 34px -4px rgba(239, 117, 100, 0.55);
+  }
+}
+
+.nav .cta:focus-visible,
+.nav .cta:active {
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 1px rgba(253, 188, 105, 0.35),
+    0 10px 26px -6px rgba(253, 188, 105, 0.75),
+    0 0 34px -4px rgba(239, 117, 100, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav .cta:hover:not(:disabled),
+  .nav .cta:focus-visible,
+  .nav .cta:active { transform: none; }
+}
+
 @media (max-width: 640px) {
   .explorer {
     width: 178px;
@@ -218,7 +277,7 @@
   .tree li::before { left: 9px; width: 8px; }
 
   .nav :global(.btn) {
-    padding: 10px 15px;
-    font-size: 0.8125rem;
+    padding: 11px 18px;
+    font-size: 0.875rem;
   }
 }

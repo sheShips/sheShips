@@ -1,20 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js): She Ships GA4 property. Enhanced measurement's
+         "page changes based on browser history events" counts SPA route
+         changes (e.g. / -> /faq) without extra code. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X9WR532FZW"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-X9WR532FZW');
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>She Ships</title>
+
+    <!-- ===== Search: what Google, Bing and AI tools read first ===== -->
+    <title>She Ships | Women in Tech Community in Sarasota, Tampa &amp; St. Pete</title>
     <meta
       name="description"
-      content="She Ships — a community of women software developers across Southwest Florida."
+      content="She Ships is a free, welcoming community for women in tech across Southwest Florida, from Sarasota and Manatee to Tampa, St. Pete, Charlotte and Lee. Meetups, workshops and hack days for every level."
     />
+    <link rel="canonical" href="https://sheships.dev/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#0b2331" />
     <link rel="icon" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+
+    <!-- ===== Link previews (LinkedIn, iMessage, Slack, Facebook, X) ===== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="She Ships" />
+    <meta property="og:url" content="https://sheships.dev/" />
+    <meta property="og:title" content="She Ships | Women in Tech in Sarasota, Tampa &amp; St. Pete" />
+    <meta
+      property="og:description"
+      content="A free, welcoming community for women in tech across Southwest Florida. Meetups, workshops and hack days for every level."
+    />
+    <meta property="og:image" content="https://sheships.dev/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="She Ships logo: a sailboat in front of a sunset, with the words Women in tech across Sarasota, Tampa and St. Pete" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="She Ships | Women in Tech in Sarasota, Tampa &amp; St. Pete" />
+    <meta name="twitter:description" content="A free, welcoming community for women in tech across Southwest Florida." />
+    <meta name="twitter:image" content="https://sheships.dev/og-image.png" />
+
+    <!-- ===== Structured data: tells machines who She Ships is and ties the
+         site to its Meetup, LinkedIn and Instagram as one organization ===== -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://sheships.dev/#org",
+            "name": "She Ships",
+            "alternateName": "She Ships SWFL",
+            "url": "https://sheships.dev/",
+            "logo": "https://sheships.dev/logo.png",
+            "image": "https://sheships.dev/og-image.png",
+            "description": "A free, welcoming community for women in tech across Southwest Florida: meetups, workshops and hack days for developers at every level.",
+            "areaServed": [
+              { "@type": "AdministrativeArea", "name": "Sarasota County, Florida" },
+              { "@type": "AdministrativeArea", "name": "Manatee County, Florida" },
+              { "@type": "AdministrativeArea", "name": "Charlotte County, Florida" },
+              { "@type": "AdministrativeArea", "name": "Lee County, Florida" },
+              { "@type": "AdministrativeArea", "name": "Hillsborough County, Florida" },
+              { "@type": "AdministrativeArea", "name": "Pinellas County, Florida" }
+            ],
+            "knowsAbout": ["Software development", "Women in technology", "Web development", "Career development"],
+            "sameAs": [
+              "https://www.meetup.com/she-ships-swfl/",
+              "https://www.linkedin.com/groups/33350020/",
+              "https://www.instagram.com/sarasotasheships/"
+            ],
+            "sponsor": [
+              { "@type": "Organization", "name": "Securipolis", "url": "https://securipolis.com" },
+              { "@type": "Organization", "name": "Whelk Works", "url": "https://whelkworks.com" }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://sheships.dev/#website",
+            "url": "https://sheships.dev/",
+            "name": "She Ships",
+            "publisher": { "@id": "https://sheships.dev/#org" },
+            "inLanguage": "en-US"
+          }
+        ]
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..700,0..100,0..1&family=Karla:wght@300..700&display=swap"
     />
+
+    <!-- The page arrives pre-built (so crawlers can read it). For people with
+         JavaScript, hold it invisible for the instant before the app takes
+         over, so the intro animation doesn't flash. No JS = shown as is. -->
+    <script>document.documentElement.classList.add('js')</script>
+    <style>.js #root:not([data-ready]) { visibility: hidden; }</style>
   </head>
   <body>
     <div id="root"></div>

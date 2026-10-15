@@ -4,16 +4,22 @@
 
 .band {
   position: relative;
-  padding-block: clamp(70px, 10vh, 120px);
+  padding-top: clamp(28px, 4vh, 52px);
+  padding-bottom: clamp(36px, 5vh, 60px);
+  /* starts in the hero's dark bottom wave and eases into the teal glow,
+     so the sea flows straight into this band with no hard edge */
   background:
-    radial-gradient(90% 140% at 50% 0%, rgba(20, 113, 130, 0.55), rgba(11, 35, 49, 0) 70%),
+    linear-gradient(180deg, var(--deep-1) 0%, rgba(11, 35, 49, 0) 45%),
+    linear-gradient(0deg, var(--deep-1) 0%, rgba(11, 35, 49, 0) 40%),
+    radial-gradient(90% 140% at 50% 30%, rgba(20, 113, 130, 0.45), rgba(11, 35, 49, 0) 70%),
     var(--deep-1);
-  border-block: 1px solid var(--hairline);
   overflow: hidden;
 }
 
 .quote {
-  margin: 0;
+  /* sits on the right-hand side of the page */
+  margin: 0 0 0 auto;
+  text-align: right;
   max-width: 24ch;
   font-family: var(--font-display);
   font-variation-settings: 'SOFT' 90, 'WONK' 1;
@@ -24,4 +30,39 @@
   letter-spacing: -0.02em;
   color: var(--ink);
   text-wrap: balance;
+}
+
+/* quote, rule and subtitle, all hugging the right-hand side */
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* a short sunset-gold line between the quote and the subtitle */
+.rule {
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin: clamp(18px, 2.4vw, 26px) 0 clamp(16px, 2vw, 22px);
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(253, 188, 105, 0), var(--sand) 40%, var(--coral));
+}
+
+.sub {
+  margin: 0;
+  /* runs the full width of the page so it takes as few lines as possible */
+  max-width: 100%;
+  font-size: clamp(1rem, 1.35vw, 1.125rem);
+  line-height: 1.65;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* wide enough for the top line to fit on one row: break exactly between the two */
+@media (min-width: 1000px) {
+  .subLine {
+    display: block;
+  }
 }

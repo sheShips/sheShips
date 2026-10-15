@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { gsap } from '../../lib/motion'
 import { prefersReducedMotion } from '../../lib/motion'
 import { useGsap } from '../../hooks/useGsap'
 import logo from '../../assets/logo.png'
 import styles from './NavBar.module.css'
 
-/** The sections the explorer lists, in page order. */
 const FILES = [
   { id: 'about',  name: 'readme', ext: '.md',   label: 'About' },
   { id: 'events', name: 'events', ext: '.json', label: 'Events' },
-  { id: 'join',   name: 'join',   ext: '.md',   label: 'Join' },
+  { id: 'connect', name: 'connect', ext: '.md', label: 'Connect' },
+  { id: 'faq',    name: 'faq',    ext: '.md',   label: 'FAQ', page: '/faq' },
 ]
 
 function FileIcon({ className }) {
@@ -33,11 +34,12 @@ function FileIcon({ className }) {
 export default function NavBar() {
   const scope = useRef(null)
   const explorerRef = useRef(null)
-  // closed at rest: it opens on hover (mouse), tap/click, or keyboard focus
   const [isOpen, setIsOpen] = useState(false)
   const [activeId, setActiveId] = useState(null)
-  // opened by a click/tap stays open until dismissed; hover-opened closes on leave
   const pinnedRef = useRef(false)
+  const { pathname } = useLocation()
+  const onHome = pathname === '/'
+  const hrefFor = (file) => file.page || (onHome ? `#${file.id}` : `/#${file.id}`)
   const timerRef = useRef(null)
 
   useGsap(scope, () => {
@@ -48,6 +50,7 @@ export default function NavBar() {
       duration: 0.8,
       stagger: 0.08,
       ease: 'power3.out',
+      clearProps: 'transform,opacity',
     })
   })
 
@@ -62,12 +65,8 @@ export default function NavBar() {
     setIsOpen(false)
   }
 
-  /* Hover only means something on a real pointer — on touch screens a
-     tap fires fake mouseenter events, which is what made it stick open. */
   const canHover = () => window.matchMedia('(hover: hover) and (pointer: fine)').matches
 
-  // a tiny open delay stops it flashing open as the cursor passes over;
-  // a longer close delay forgives a cursor that slips off the edge
   const onPointerEnter = (e) => {
     if (e.pointerType !== 'mouse' || !canHover()) return
     clearTimer()
@@ -80,8 +79,6 @@ export default function NavBar() {
     timerRef.current = window.setTimeout(() => setIsOpen(false), 260)
   }
 
-  // click/tap: open-and-pin, or close. If hover already opened it, a click
-  // pins it rather than snapping it shut under the cursor.
   const toggle = () => {
     clearTimer()
     if (isOpen && !pinnedRef.current) {
@@ -92,7 +89,6 @@ export default function NavBar() {
     setIsOpen(!isOpen)
   }
 
-  /* keyboard: tabbing in opens it, tabbing out closes it */
   const onFocus = (e) => {
     if (e.target.matches(':focus-visible')) setIsOpen(true)
   }
@@ -100,12 +96,10 @@ export default function NavBar() {
     if (!explorerRef.current?.contains(e.relatedTarget)) close()
   }
 
-  /* Escape, a click anywhere else, or scrolling away all close it */
   useEffect(() => {
     if (!isOpen) return undefined
     const onKey = (e) => {
       if (e.key === 'Escape') {
-        // move focus home first, then close — otherwise the focus event reopens it
         explorerRef.current?.querySelector('button')?.focus()
         close()
       }
@@ -129,7 +123,6 @@ export default function NavBar() {
 
   useEffect(() => clearTimer, [])
 
-  /* mark the file you're currently "in", the way an editor does */
   useEffect(() => {
     const sections = FILES.map((f) => document.getElementById(f.id)).filter(Boolean)
     if (!sections.length || !('IntersectionObserver' in window)) return undefined
@@ -190,10 +183,10 @@ export default function NavBar() {
               {FILES.map((file) => (
                 <li key={file.id}>
                   <a
-                    href={`#${file.id}`}
+                    href={hrefFor(file)}
                     aria-label={file.label}
-                    aria-current={activeId === file.id ? 'true' : undefined}
-                    className={activeId === file.id ? styles.active : undefined}
+                    aria-current={(file.page ? pathname === file.page : activeId === file.id) ? 'true' : undefined}
+                    className={(file.page ? pathname === file.page : activeId === file.id) ? styles.active : undefined}
                     onClick={close}
                     tabIndex={isOpen ? undefined : -1}
                   >
@@ -209,7 +202,7 @@ export default function NavBar() {
           </div>
         </div>
 
-        <a className="btn" href="#join">
+        <a className={`btn ${styles.cta}`} href={onHome ? '#events' : '/#events'}>
           Get involved
         </a>
       </nav>

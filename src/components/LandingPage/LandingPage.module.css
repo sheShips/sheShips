@@ -74,10 +74,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 46%;
-  min-height: 240px;
+  height: 58%;
+  min-height: 300px;
   z-index: -1;
   pointer-events: none;
+  overflow: hidden;
 }
 
 .sea::after {
@@ -103,10 +104,35 @@
   height: auto;
 }
 
-.wave1 { bottom: 52%; }
-.wave2 { bottom: 34%; }
-.wave3 { bottom: 16%; }
+/* Each wave's fill runs on well past the bottom of its svg (the path
+   extends 600 units down and overflow is visible), so the bands overlap
+   like water instead of ending in straight seams. .sea clips it. */
+.wave svg {
+  overflow: visible;
+}
+
+/* stacked closer together than before, so they read as one sea */
+.wave1 { bottom: 36%; }
+.wave2 { bottom: 24%; }
+.wave3 { bottom: 12%; }
 .wave4 { bottom: -2%; }
+
+/* a slow sideways sway, each band on its own rhythm, so the water
+   never quite sits still (only the curve moves; the parallax on the
+   band itself is untouched) */
+@media (prefers-reduced-motion: no-preference) {
+  .wave svg {
+    animation: sway 14s ease-in-out infinite alternate;
+  }
+  .wave2 svg { animation-duration: 17s; animation-delay: -4s; }
+  .wave3 svg { animation-duration: 20s; animation-delay: -9s; }
+  .wave4 svg { animation-duration: 23s; animation-delay: -2s; }
+}
+
+@keyframes sway {
+  from { transform: translateX(-2.2%); }
+  to   { transform: translateX(2.2%); }
+}
 
 /* ---------- hero content -------------------------------------- */
 
@@ -142,6 +168,16 @@
   background: radial-gradient(circle at 50% 50%, rgba(253, 188, 105, 0.34), rgba(239, 117, 100, 0.16) 38%, rgba(239, 117, 100, 0) 66%);
   filter: blur(18px);
   pointer-events: none;
+}
+
+/* wrapper that takes the cursor tilt / tap-to-tack, so the idle bob on
+   .logo keeps its own transform */
+.boat {
+  position: relative;
+  display: block;
+  width: 100%;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .logo {

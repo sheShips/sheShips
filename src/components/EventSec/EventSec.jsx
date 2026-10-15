@@ -1,357 +1,189 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { revealOnScroll } from '../../lib/motion'
 import { useGsap } from '../../hooks/useGsap'
-import {
-  WARM_TAGS,
-  MONTHS,
-  DOW_SHORT,
-  DOW_FULL,
-  dayKey,
-  formatTime,
-  fetchUpcomingEvents,
-  isCalendarConfigured,
-  getCalendarSubscribeUrl,
-  getCalendarViewUrl,
-} from '../../lib/events'
+import { LUMA } from '../../lib/luma'
+import logo from '../../assets/logo.png'
 import styles from './EventSec.module.css'
 
-const TODAY = new Date()
+const MAX_TIMER = 2147483647
+const GENERATED = import.meta.glob('../../generated/events.json', { eager: true, import: 'default' })
+const feed = Object.values(GENERATED)[0] ?? null
 
-/**
- * Builds the cells for one month, padded out with the tail of the
- * previous month and the head of the next so the grid always sits on
- * whole weeks.
- */
-function buildMonth(year, month) {
-  const firstDay = new Date(year, month, 1).getDay()
-  const daysInMonth = new Date(year, month + 1, 0).getDate()
-  const daysPrev = new Date(year, month, 0).getDate()
-  const total = Math.ceil((firstDay + daysInMonth) / 7) * 7
-
-  return Array.from({ length: total }, (_, i) => {
-    if (i < firstDay) {
-      const day = daysPrev - firstDay + 1 + i
-      return { day, date: new Date(year, month - 1, day), outside: true }
-    }
-    if (i >= firstDay + daysInMonth) {
-      const day = i - (firstDay + daysInMonth) + 1
-      return { day, date: new Date(year, month + 1, day), outside: true }
-    }
-    const day = i - firstDay + 1
-    return { day, date: new Date(year, month, day), outside: false }
-  })
+function readEvents(source) {
+  if (!source || !Array.isArray(source.events)) return null
+  return source.events
+    .map((event) => ({ ...event, startTime: Date.parse(event.start), endTime: Date.parse(event.end || event.start) }))
+    .filter((event) => Number.isFinite(event.startTime) && Number.isFinite(event.endTime))
 }
 
-export default function EventSec() {
-  const scope = useRef(null)
-  const [cursor, setCursor] = useState(() => new Date(TODAY.getFullYear(), TODAY.getMonth(), 1))
-  const [events, setEvents] = useState([])
-  const [state, setState] = useState(isCalendarConfigured() ? 'loading' : 'empty')
-  // hovering a calendar day lights the matching row in the list, and vice versa
-  const [linkedDay, setLinkedDay] = useState(null)
+function useUpcoming(source) {
+  const all = useMemo(() => readEvents(source), [source])
+  const [now, setNow] = useState(() => Date.now())
 
-  /* Live from Google Calendar. Nothing is hard-coded: if the calendar
-     is empty or not connected yet, the section says so rather than
-     inventing dates. */
+  const upcoming = useMemo(
+    () => (all ? all.filter((event) => event.endTime > now).sort((a, b) => a.startTime - b.startTime) : null),
+    [all, now],
+  )
+
   useEffect(() => {
-    if (!isCalendarConfigured()) return undefined
-
-    let controller
-    const load = () => {
-      controller?.abort()
-      controller = new AbortController()
-      fetchUpcomingEvents({ signal: controller.signal })
-        .then((items) => {
-          setEvents(items)
-          setState(items.length ? 'ready' : 'empty')
-        })
-        .catch((error) => {
-          if (error.name === 'AbortError') return
-          console.error('[She Ships] calendar failed to load', error)
-          // keep showing what we already have if a refresh fails
-          setState((current) => (current === 'ready' ? current : 'error'))
-        })
-    }
-
-    /* Live: re-check every 5 minutes while the page is open, and straight
-       away when someone returns to a tab they left in the background. */
-    load()
-    const interval = window.setInterval(() => {
-      if (document.visibilityState === 'visible') load()
-    }, 5 * 60 * 1000)
+    if (!upcoming || !upcoming.length) return undefined
+    const nextEnd = Math.min(...upcoming.map((event) => event.endTime))
+    const delay = Math.min(Math.max(nextEnd - Date.now(), 0) + 1000, MAX_TIMER)
+    const timer = window.setTimeout(() => setNow(Date.now()), delay)
     const onVisible = () => {
-      if (document.visibilityState === 'visible') load()
+      if (document.visibilityState === 'visible') setNow(Date.now())
     }
     document.addEventListener('visibilitychange', onVisible)
-
     return () => {
-      controller?.abort()
-      window.clearInterval(interval)
+      window.clearTimeout(timer)
       document.removeEventListener('visibilitychange', onVisible)
     }
-  }, [])
+  }, [upcoming])
 
-  const eventsByDay = useMemo(() => {
-    const map = new Map()
-    events.forEach((event) => {
-      const key = dayKey(event.start)
-      map.set(key, [...(map.get(key) || []), event])
-    })
-    return map
+  return upcoming
+}
+
+function useLumaCheckout(eventId) {
+  useEffect(() => {
+    if (!eventId) return
+    const init = () => window.luma?.initCheckout?.()
+    const existing = document.getElementById(LUMA.checkoutScriptId)
+    if (existing) {
+      init()
+      existing.addEventListener('load', init, { once: true })
+      return
+    }
+    const script = document.createElement('script')
+    script.id = LUMA.checkoutScriptId
+    script.src = LUMA.checkoutScript
+    script.async = true
+    script.addEventListener('load', init, { once: true })
+    document.body.appendChild(script)
+  }, [eventId])
+}
+
+function useEventSchema(events) {
+  useEffect(() => {
+    if (!events || !events.length) return undefined
+    const data = {
+      '@context': 'https://schema.org',
+      '@graph': events.slice(0, 20).map((event) => ({
+        '@type': 'Event',
+        name: event.title,
+        startDate: event.start,
+        endDate: event.end,
+        eventStatus: 'https://schema.org/EventScheduled',
+        eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+        isAccessibleForFree: true,
+        location: event.location
+          ? { '@type': 'Place', name: event.location, address: event.location }
+          : { '@type': 'Place', name: 'Southwest Florida' },
+        organizer: { '@id': 'https://sheships.dev/#org' },
+        url: event.url,
+        description: 'A free She Ships event for women in tech in Southwest Florida.',
+      })),
+    }
+    const tag = document.createElement('script')
+    tag.type = 'application/ld+json'
+    tag.dataset.sheShipsEvents = ''
+    tag.textContent = JSON.stringify(data)
+    document.head.appendChild(tag)
+    return () => tag.remove()
   }, [events])
+}
 
-  const cells = useMemo(() => buildMonth(cursor.getFullYear(), cursor.getMonth()), [cursor])
-  const upcoming = useMemo(() => events.slice(0, 4), [events])
-  const hasEvents = events.length > 0
+export default function EventSec({ data = feed }) {
+  const scope = useRef(null)
+  const upcoming = useUpcoming(data)
+  const state = upcoming === null ? 'unknown' : upcoming.length ? 'upcoming' : 'empty'
+  const next = state === 'upcoming' ? upcoming[0] : null
+
+  useLumaCheckout(next?.id)
+  useEventSchema(upcoming)
 
   useGsap(scope, () => {
     revealOnScroll('[data-reveal-head] > *', {
       trigger: `.${styles.events}`,
       start: 'top 72%',
     })
-    revealOnScroll(`.${styles.cal}, .${styles.up}`, {
-      trigger: `.${styles.layout}`,
-      start: 'top 78%',
-      y: 46,
-      stagger: 0.14,
+    revealOnScroll(`.${styles.frame}, .${styles.actions}`, {
+      trigger: `.${styles.frame}`,
+      start: 'top 82%',
+      y: 40,
+      stagger: 0.12,
     })
   }, [])
-
-  const shiftMonth = (delta) =>
-    setCursor((current) => new Date(current.getFullYear(), current.getMonth() + delta, 1))
-
-  const todayKey = dayKey(TODAY)
-  const subscribeUrl = getCalendarSubscribeUrl()
-  const viewUrl = getCalendarViewUrl()
-
-  const note = {
-    loading: 'Checking the calendar…',
-    error: 'Couldn’t reach the calendar just now. Try again in a minute.',
-    empty: 'No dates on the books yet — this fills in as they’re set.',
-    ready: 'Straight from our Google Calendar, so it’s always current.',
-  }[state]
 
   return (
     <section className={`section ${styles.events}`} id="events" ref={scope}>
       <div className="wrap">
         <div className="section-head" data-reveal-head>
-          <p className="eyebrow">What&rsquo;s on</p>
-          <h2 className="lead">
-            See what&rsquo;s coming up.
-          </h2>
-          <p>
-            Meetups, workshops and hack days across the region &mdash; Sarasota, Fort Myers,
-            Naples, everywhere between. We update this calendar as plans are set, so you
-            don&rsquo;t miss anything.
-          </p>
-        </div>
-
-        <div className={styles.layout}>
-          {/* ---------- month grid ---------- */}
-          <div className={styles.cal}>
-            <div className={styles.calHead}>
-              <div>
-                <div className={styles.calMonth}>
-                  {MONTHS[cursor.getMonth()]} {cursor.getFullYear()}
-                </div>
-                <small className={styles.calSub}>Meetups &amp; workshops</small>
-              </div>
-              <div className={styles.calNav}>
-                <button type="button" onClick={() => shiftMonth(-1)} aria-label="Previous month">
-                  &#8249;
-                </button>
-                <button type="button" onClick={() => shiftMonth(1)} aria-label="Next month">
-                  &#8250;
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.grid} role="grid" aria-label="Event calendar">
-              {DOW_SHORT.map((label, i) => (
-                <div
-                  key={DOW_FULL[i]}
-                  className={styles.dow}
-                  role="columnheader"
-                  aria-label={DOW_FULL[i]}
-                >
-                  {label}
-                </div>
-              ))}
-
-              {cells.map((cell, i) => {
-                const key = dayKey(cell.date)
-                const dayEvents = cell.outside ? null : eventsByDay.get(key)
-                const classes = [
-                  styles.cell,
-                  cell.outside && styles.outside,
-                  key === todayKey && styles.today,
-                  dayEvents && styles.hasEvent,
-                  dayEvents && linkedDay === key && styles.active,
-                ]
-                  .filter(Boolean)
-                  .join(' ')
-
-                return (
-                  <div
-                    key={`${key}-${i}`}
-                    role="gridcell"
-                    className={classes}
-                    tabIndex={dayEvents ? 0 : undefined}
-                    aria-label={
-                      dayEvents
-                        ? `${dayEvents.length} event${dayEvents.length > 1 ? 's' : ''} on ${
-                            MONTHS[cell.date.getMonth()]
-                          } ${cell.day}`
-                        : undefined
-                    }
-                    onMouseEnter={dayEvents ? () => setLinkedDay(key) : undefined}
-                    onMouseLeave={dayEvents ? () => setLinkedDay(null) : undefined}
-                    onFocus={dayEvents ? () => setLinkedDay(key) : undefined}
-                    onBlur={dayEvents ? () => setLinkedDay(null) : undefined}
-                  >
-                    {cell.day}
-                    {dayEvents ? <span className={styles.dot} /> : null}
-                  </div>
-                )
-              })}
-            </div>
-
-            <p className={`${styles.calNote} ${state === 'error' ? styles.calNoteWarn : ''}`}>
-              <span className={styles.pip} />
-              {note}
+          <p className="eyebrow">Upcoming events</p>
+          <h2 className="lead">See what&rsquo;s coming up.</h2>
+          {state === 'empty' ? (
+            <p>Always free to attend. New dates go up on Luma first.</p>
+          ) : (
+            <p>
+              Meetups, workshops and hack days across the region &mdash; Sarasota, Fort Myers,
+              Naples, everywhere between. Always free to attend.
             </p>
-          </div>
-
-          {/* ---------- upcoming list ---------- */}
-          <div className={styles.up}>
-            <div className={styles.upHead}>
-              <h3>Upcoming</h3>
-              {hasEvents ? (
-                <span className={styles.upCount}>{events.length} scheduled</span>
-              ) : null}
-            </div>
-
-            {hasEvents ? (
-              upcoming.map((event) => {
-                const key = dayKey(event.start)
-                return (
-                  <a
-                    key={event.id || `${key}-${event.title}`}
-                    className={`${styles.ev} ${linkedDay === key ? styles.linked : ''}`}
-                    href={event.htmlLink || '#join'}
-                    target={event.htmlLink ? '_blank' : undefined}
-                    rel={event.htmlLink ? 'noopener noreferrer' : undefined}
-                    onMouseEnter={() => setLinkedDay(key)}
-                    onMouseLeave={() => setLinkedDay(null)}
-                  >
-                    <span className={styles.evDate}>
-                      <span className={styles.evMon}>
-                        {MONTHS[event.start.getMonth()].slice(0, 3)}
-                      </span>
-                      <span className={styles.evDay}>{event.start.getDate()}</span>
-                    </span>
-                    <span className={styles.evBody}>
-                      <span className={styles.evTitle}>{event.title}</span>
-                      <span className={styles.evMeta}>
-                        {DOW_FULL[event.start.getDay()]}
-                        <span className={styles.sep}>&middot;</span>
-                        {event.allDay ? 'All day' : formatTime(event.start)}
-                        <span className={styles.sep}>&middot;</span>
-                        {event.location}
-                      </span>
-                      <span
-                        className={`${styles.evTag} ${
-                          WARM_TAGS.has(event.tag) ? styles.evTagWarm : ''
-                        }`}
-                      >
-                        {event.tag}
-                      </span>
-                    </span>
-                  </a>
-                )
-              })
-            ) : (
-              <EmptyState state={state} />
-            )}
-
-            {/* These appear on their own once there's something to point at. */}
-            {hasEvents ? (
-              <div className={styles.cta}>
-                {subscribeUrl ? (
-                  <a className="btn" href={subscribeUrl} target="_blank" rel="noopener noreferrer">
-                    Add to your calendar
-                  </a>
-                ) : null}
-                {viewUrl ? (
-                  <a
-                    className="btn btn-ghost"
-                    href={viewUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    See all events
-                  </a>
-                ) : null}
-              </div>
-            ) : null}
-          </div>
+          )}
         </div>
+
+        <div className={`${styles.frame} ${state === 'empty' ? styles.frameEmpty : ''}`}>
+          <iframe
+            className={styles.calendar}
+            src={LUMA.calendarEmbed}
+            title="She Ships events calendar on Luma"
+            loading="lazy"
+            allow="fullscreen; payment"
+            aria-hidden={state === 'empty' ? 'true' : undefined}
+            tabIndex={state === 'empty' ? -1 : undefined}
+          />
+          {state === 'empty' ? (
+            <div className={styles.overlay}>
+              <div className={styles.harbor} aria-hidden="true">
+                <img className={styles.boat} src={logo} alt="" width="536" height="700" />
+                <svg className={styles.water} viewBox="0 0 120 16" preserveAspectRatio="none">
+                  <path d="M0 8 C10 2 20 2 30 8 S50 14 60 8 S80 2 90 8 S110 14 120 8 V16 H0 Z" />
+                </svg>
+              </div>
+              <h3 className={styles.emptyTitle}>No events yet!</h3>
+              <p className={styles.emptyCopy}>
+                The next one is in the works. Sail over to our Luma so you don&rsquo;t miss a thing.
+              </p>
+              <a className={`btn ${styles.action}`} href={LUMA.calendarUrl} target="_blank" rel="noopener noreferrer">
+                Follow for the next event!
+              </a>
+            </div>
+          ) : null}
+        </div>
+
+        {state === 'empty' ? null : (
+          <div className={styles.actions}>
+            {next ? (
+              <a
+                className={`btn ${styles.action}`}
+                href={next.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-luma-action="checkout"
+                data-luma-event-id={next.id || undefined}
+              >
+                Register for the next event
+              </a>
+            ) : null}
+            <a
+              className={`btn btn-ghost ${styles.action}`}
+              href={LUMA.calendarUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Follow on Luma
+            </a>
+          </div>
+        )}
       </div>
     </section>
-  )
-}
-
-/* ---------- empty / loading / error -------------------------------- */
-
-function EmptyState({ state }) {
-  if (state === 'loading') {
-    return (
-      <div className={styles.empty} aria-busy="true">
-        <span className={styles.emptyPulse} aria-hidden="true" />
-        <p className={styles.emptyCopy}>Loading what&rsquo;s coming up&hellip;</p>
-      </div>
-    )
-  }
-
-  if (state === 'error') {
-    return (
-      <div className={styles.empty} role="alert">
-        <p className={styles.emptyTitle}>The calendar didn&rsquo;t load</p>
-        <p className={styles.emptyCopy}>
-          Refresh and it&rsquo;ll probably sort itself out. If not, the list below still works.
-        </p>
-        <a className="btn btn-ghost" href="#join">
-          Get on the list
-        </a>
-      </div>
-    )
-  }
-
-  return (
-    <div className={styles.empty}>
-      <svg
-        className={styles.emptyIcon}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M3 17c2-1.4 3.3-1.4 5.2 0s3.6 1.4 5.5 0 3.3-1.4 5.3 0" />
-        <path d="M3 21c2-1.4 3.3-1.4 5.2 0s3.6 1.4 5.5 0 3.3-1.4 5.3 0" />
-        <path d="M12 13V3" />
-        <path d="M12 4l6 4-6 3z" />
-      </svg>
-      <p className={styles.emptyTitle}>Nothing on the books right now</p>
-      <p className={styles.emptyCopy}>
-        New dates show up here as soon as they&rsquo;re set. Get on the list and you&rsquo;ll hear
-        about them too.
-      </p>
-      <a className="btn" href="#join">
-        Get on the list
-      </a>
-    </div>
   )
 }

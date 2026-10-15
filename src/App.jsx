@@ -7,15 +7,13 @@ import LandingPage from './components/LandingPage/LandingPage'
 import AboutSec from './components/AboutSec/AboutSec'
 import QuoteSec from './components/QuoteSec/QuoteSec'
 import EventSec from './components/EventSec/EventSec'
-import Form from './components/Form/Form'
 import Footer from './components/Footer/Footer'
 import NotFound from './components/NotFound/NotFound'
+import FaqPage from './components/FaqPage/FaqPage'
 
 function Home() {
   const { hash } = useLocation()
 
-  /* Images settle after mount and change every section's height, so the
-     ScrollTrigger start/end positions have to be recalculated once. */
   useEffect(() => {
     const id = window.setTimeout(() => ScrollTrigger.refresh(), 250)
     window.addEventListener('load', ScrollTrigger.refresh)
@@ -25,7 +23,6 @@ function Home() {
     }
   }, [])
 
-  /* arriving at /#events from the 404 page should land on that section */
   useEffect(() => {
     if (!hash) return
     const target = document.querySelector(hash)
@@ -37,10 +34,9 @@ function Home() {
       <NavBar />
       <main>
         <LandingPage />
-        <AboutSec />
         <QuoteSec />
+        <AboutSec />
         <EventSec />
-        <Form />
       </main>
       <Footer />
     </>
@@ -51,6 +47,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/faq" element={<FaqPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

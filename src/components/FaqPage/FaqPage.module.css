@@ -1,0 +1,171 @@
+/* ============================================================
+   FAQ — its own page, same sky and sea as the rest of the site.
+   ============================================================ */
+
+.page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(120px, 18vh, 170px) 0 clamp(56px, 8vh, 96px);
+}
+
+.sky {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(80% 50% at 50% 0%, rgba(20, 113, 130, 0.5), rgba(11, 35, 49, 0) 70%),
+    radial-gradient(60% 40% at 85% 12%, rgba(253, 188, 105, 0.12), rgba(253, 188, 105, 0) 70%),
+    var(--deep-1);
+}
+
+.inner {
+  max-width: 860px;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: clamp(32px, 5vh, 52px);
+}
+
+.head h1 {
+  font-size: var(--t-h2);
+}
+
+.intro {
+  max-width: 56ch;
+  color: var(--ink-soft);
+}
+
+/* ---------- the questions ---------- */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item {
+  border-radius: 18px;
+  border: 1px solid var(--hairline);
+  background: rgba(17, 54, 70, 0.42);
+  transition: border-color 0.45s ease, background-color 0.45s ease, box-shadow 0.45s ease;
+}
+
+.item:hover {
+  border-color: rgba(111, 199, 211, 0.35);
+}
+
+.item.open {
+  border-color: rgba(253, 188, 105, 0.45);
+  background: rgba(20, 113, 130, 0.22);
+  box-shadow: 0 18px 40px -24px rgba(239, 117, 100, 0.55);
+}
+
+.q {
+  margin: 0;
+  font-size: inherit;
+}
+
+.qBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: clamp(18px, 2.4vw, 22px) clamp(18px, 2.6vw, 26px);
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-size: clamp(1.02rem, 1.6vw, 1.15rem);
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 18px;
+}
+
+.qBtn:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: -3px;
+}
+
+/* plus that turns into a minus, in the sunset gradient */
+.icon {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--abyss);
+  background: linear-gradient(135deg, var(--sand), var(--coral));
+  box-shadow: 0 6px 18px -8px rgba(239, 117, 100, 0.7);
+  transition: transform 0.7s cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+.iconV {
+  transform-origin: 12px 12px;
+  transition: transform 0.7s cubic-bezier(0.45, 0, 0.55, 1), opacity 0.5s ease;
+}
+
+.open .icon {
+  transform: rotate(180deg);
+}
+
+.open .iconV {
+  transform: rotate(90deg);
+  opacity: 0;
+}
+
+/* With JS the answers start folded and GSAP opens them; without JS (and for
+   crawlers, which ignore this) every answer is simply shown. */
+:global(.js) .panel {
+  height: 0;
+  overflow: hidden;
+}
+
+.answer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 clamp(18px, 2.6vw, 26px) clamp(20px, 2.6vw, 24px);
+  color: var(--ink-soft);
+  line-height: 1.7;
+  max-width: 68ch;
+}
+
+.answer p {
+  margin: 0;
+}
+
+.answer a {
+  color: var(--sand);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(253, 188, 105, 0.45);
+}
+
+.answer a:hover {
+  color: var(--coral);
+  border-color: var(--coral);
+}
+
+/* ---------- closing nudge ---------- */
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  margin-top: clamp(36px, 5vh, 56px);
+  text-align: center;
+}
+
+.cta p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+}

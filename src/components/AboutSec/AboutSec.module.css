@@ -2,7 +2,10 @@
    AboutSec — four pillars above the waterline.
    ============================================================ */
 
-.about {
+/* `section.` so this beats the shared .section padding */
+section.about {
+  padding-top: clamp(48px, 7vh, 84px);
+  padding-bottom: clamp(56px, 8vh, 96px);
   background: linear-gradient(180deg, var(--deep-1) 0%, var(--deep-2) 55%, var(--deep-1) 100%);
 }
 

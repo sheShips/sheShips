@@ -19,7 +19,7 @@ src/
   App.jsx                  routes: / and the 404 catch-all
   styles/global.css        brand tokens, resets, .wrap / .section / .btn / .eyebrow
   lib/motion.js            gsap + ScrollTrigger, reduced-motion check, revealOnScroll
-  lib/events.js            event data, date helpers, Google Calendar fetch
+  lib/luma.js              Luma calendar config (page, embed, iCal feed, checkout script)
   hooks/useGsap.js         runs GSAP in a scope and reverts it on unmount
   assets/logo.png          the mark, background removed
   components/
@@ -27,9 +27,8 @@ src/
     LandingPage/           hero, waves, starfield, logo sail-in
     AboutSec/              four pillars
     QuoteSec/              pull-quote band
-    EventSec/              calendar + upcoming list
-    Form/                  join form
-    Footer/                Meetup, Whelk Works, Securipolis
+    EventSec/              Luma calendar embed, register and follow buttons
+    Footer/                socials (#connect), Whelk Works, Securipolis
     NotFound/              404
 ```
 
@@ -46,37 +45,28 @@ Hidden states are set by GSAP at runtime, never in CSS. If the script fails,
 every section still renders at full opacity instead of sitting invisible waiting
 for an observer. `prefers-reduced-motion` short-circuits all of it.
 
-## Two things still to wire
+## Events (Luma)
 
-**Google Calendar** — the calendar is live and reads from Google. Nothing is
-hard-coded, so the site never shows an event that doesn't exist. For a public
-calendar, put these in `.env`:
+Events live on Luma at https://luma.com/sheships. All Luma values sit in
+`src/lib/luma.js`.
 
-```
-VITE_GCAL_ID=…@group.calendar.google.com
-VITE_GCAL_KEY=…
-```
+The browser can't read Luma's data, so the event check happens at build time.
+`scripts/fetch-events.mjs` runs every time Vite starts (dev or build, via a plugin in
+`vite.config.js`), or on its own with `npm run fetch-events`. It reads
+the iCal feed and writes `src/generated/events.json` (gitignored) with the events
+that haven't ended yet. If the feed can't be reached, it writes `null` and the
+build carries on.
 
-Until those are set — or while the calendar is genuinely empty — `EventSec`
-renders its empty state, and the "Add to your calendar" / "See all events"
-buttons stay hidden. They appear on their own once there are events to point at.
+`EventSec` then shows one of three states:
 
-Two conventions it reads off each Google Calendar entry:
+- **Upcoming events:** the Luma calendar, "Register for the next event" (Luma
+  checkout) and "Follow on Luma"
+- **No events:** the calendar dimmed behind a "No events yet!" overlay with a link
+  to the Luma page
+- **Feed unreachable:** the calendar and "Follow on Luma"
 
-- the **first line of the description** becomes the chip (`Workshop`, `Hack day`,
-  `Social`); anything else falls back to `Meetup`
-- the **location field** becomes the city line
-
-A private calendar needs OAuth and a server-side proxy so the client secret never
-reaches the browser.
-
-**Form submission** — `Form.jsx` has a `submitSignup()` stub with the payload
-already shaped for HubSpot's Forms API. Loading, error and success states all
-work against it today.
-
-> Securipolis and Whelk Works have separate HubSpot portals and their IDs differ
-> by only a few digits — check the full number before wiring it. She Ships has no
-> portal of its own, so which one this lands in is a decision to make on purpose.
+Events that end between builds drop off on their own, using the visitor's clock.
+Rebuild and redeploy after adding an event on Luma so the Register button appears.
 
 ## Deploying
 
