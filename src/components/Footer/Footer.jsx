@@ -1,11 +1,10 @@
 import { useRef } from 'react'
 import { gsap, prefersReducedMotion, revealOnScroll } from '../../lib/motion'
 import { useGsap } from '../../hooks/useGsap'
-import meetupSymbol from '../../assets/meetup-symbol-white.png'
 import linkedinBug from '../../assets/linkedin-bug-white.png'
+import { LUMA } from '../../lib/luma'
 import styles from './Footer.module.css'
 
-const MEETUP_URL = 'https://www.meetup.com/she-ships-swfl/'
 
 const LINKEDIN_URL = 'https://www.linkedin.com/groups/33350020/'
 const INSTAGRAM_URL = 'https://www.instagram.com/sarasotasheships/'
@@ -57,13 +56,16 @@ export default function Footer() {
         </p>
 
         <nav className={styles.socials} aria-label="Find She Ships online">
-          <a className={styles.socialLink} href={MEETUP_URL} target="_blank" rel="noopener noreferrer">
-            <span className={`${styles.dot} ${styles.dotMeetup}`}>
-              <img src={meetupSymbol} alt="" width="26" height="26" />
+          <a className={styles.socialLink} href={LUMA.calendarUrl} target="_blank" rel="noopener noreferrer">
+            <span className={`${styles.dot} ${styles.dotLuma}`}>
+              <svg viewBox="0 0 133 134" width="24" height="24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M133 67C96.282 67 66.5 36.994 66.5 0c0 36.994-29.782 67-66.5 67 36.718 0 66.5 30.006 66.5 67 0-36.994 29.782-67 66.5-67"
+                />
+              </svg>
             </span>
-            <span className={styles.socialLabel}>
-              Meetup
-            </span>
+            <span className={styles.socialLabel}>Luma</span>
           </a>
           <a className={styles.socialLink} href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
             <span className={styles.dot}>

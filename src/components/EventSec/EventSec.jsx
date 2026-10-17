@@ -16,6 +16,35 @@ function readEvents(source) {
     .filter((event) => Number.isFinite(event.startTime) && Number.isFinite(event.endTime))
 }
 
+function useLiveFeed(initial) {
+  const [data, setData] = useState(initial)
+
+  useEffect(() => {
+    let cancelled = false
+    let lastLoad = 0
+    const load = () => {
+      lastLoad = Date.now()
+      fetch(`${import.meta.env.BASE_URL}${LUMA.liveFeed}`, { headers: { accept: 'application/json' } })
+        .then((response) => (response.ok ? response.json() : null))
+        .then((json) => {
+          if (!cancelled && json && Array.isArray(json.events)) setData(json)
+        })
+        .catch(() => {})
+    }
+    load()
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && Date.now() - lastLoad > 300000) load()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      cancelled = true
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [])
+
+  return data
+}
+
 function useUpcoming(source) {
   const all = useMemo(() => readEvents(source), [source])
   const [now, setNow] = useState(() => Date.now())
@@ -94,7 +123,8 @@ function useEventSchema(events) {
 
 export default function EventSec({ data = feed }) {
   const scope = useRef(null)
-  const upcoming = useUpcoming(data)
+  const live = useLiveFeed(data)
+  const upcoming = useUpcoming(live)
   const state = upcoming === null ? 'unknown' : upcoming.length ? 'upcoming' : 'empty'
   const next = state === 'upcoming' ? upcoming[0] : null
 
@@ -124,8 +154,8 @@ export default function EventSec({ data = feed }) {
             <p>Always free to attend. New dates go up on Luma first.</p>
           ) : (
             <p>
-              Meetups, workshops and hack days across the region &mdash; Sarasota, Fort Myers,
-              Naples, everywhere between. Always free to attend.
+              Meetups, workshops and hack days across the region: Sarasota, Fort Myers, Naples
+              and everywhere between. Always free to attend.
             </p>
           )}
         </div>

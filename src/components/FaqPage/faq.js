@@ -53,7 +53,7 @@ export const FAQS = [
     id: 'stay-in-the-loop',
     q: 'How do I stay in the loop?',
     answer: [
-      'Follow She Ships on Luma at luma.com/sheships and you’ll hear about every new event first. You can also follow along on Meetup, LinkedIn and Instagram.',
+      'Follow She Ships on Luma at luma.com/sheships and you’ll hear about every new event first. You can also follow along on LinkedIn and Instagram.',
     ],
   },
   {

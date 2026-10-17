@@ -6,5 +6,6 @@ export const LUMA = {
   calendarEmbed: `https://luma.com/embed/calendar/${CALENDAR_ID}/events`,
   icsFeed: `https://api.lu.ma/ics/get?entity=calendar&id=${CALENDAR_ID}`,
   checkoutScript: 'https://embed.lu.ma/checkout-button.js',
-  checkoutScriptId: 'luma-checkout-script',
+  checkoutScriptId: 'luma-checkout',
+  liveFeed: 'events.php',
 }

@@ -1,15 +1,10 @@
-/* ============================================================
-   Footer — the water closing over the page.
-   ============================================================ */
 
 .footer {
   position: relative;
   padding-top: clamp(100px, 13vh, 150px);
-  /* room to breathe under the credits, plus the phone's home-bar area */
-  padding-bottom: calc(clamp(72px, 10vh, 112px) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(clamp(72px, 10vh, 112px) + env(safe-area-inset-bottom, 0px));
   background: linear-gradient(180deg, var(--deep-1) 0%, #0a1f2c 60%, #081a26 100%);
-  /* clip sideways (the waves are 120% wide) but let them crest above the top edge */
-  overflow-x: clip;
+    overflow-x: clip;
   overflow-y: visible;
 }
 
@@ -51,31 +46,6 @@
   font-style: italic;
 }
 
-.meetup {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 13px 24px;
-  border-radius: 999px;
-  border: 1px solid rgba(111, 199, 211, 0.35);
-  background: rgba(111, 199, 211, 0.09);
-  color: var(--ink);
-  font-weight: 700;
-  font-size: 0.9375rem;
-  text-decoration: none;
-  transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.25s var(--ease-out);
-}
-
-.meetup:hover {
-  background: rgba(111, 199, 211, 0.18);
-  border-color: var(--foam);
-  transform: translateY(-2px);
-}
-
-.meetup svg {
-  flex: none;
-}
-
 .colophon {
   display: flex;
   flex-direction: column;
@@ -93,7 +63,6 @@
   line-height: 1.9;
 }
 
-/* the credit names read as names, not fine print */
 .colophon a {
   color: var(--sand);
   font-weight: 700;
@@ -118,7 +87,6 @@
   color: var(--hairline);
 }
 
-/* ---------- Meetup / LinkedIn / Instagram: three matching round buttons ---------- */
 .socials {
   display: flex;
   justify-content: center;
@@ -141,15 +109,13 @@
   place-items: center;
   border-radius: 50%;
   color: var(--white);
-  /* all three in the sunset gradient, with the white marks on top */
-  border: 0;
+    border: 0;
   background: linear-gradient(135deg, var(--sand), var(--coral));
   box-shadow: 0 8px 24px -8px rgba(239, 117, 100, 0.7);
   transition: transform 0.28s var(--ease-out), box-shadow 0.28s ease;
 }
 
-/* Meetup is the main one: sunset gradient behind their white mark */
-.dotMeetup {
+.dotLuma {
   border: 0;
   background: linear-gradient(135deg, var(--sand), var(--coral));
   box-shadow: 0 8px 24px -8px rgba(239, 117, 100, 0.7);
@@ -192,7 +158,6 @@
   outline-offset: 3px;
 }
 
-/* Created by / Presented by, stacked; each stays on one line */
 .credit {
   display: block;
   white-space: nowrap;

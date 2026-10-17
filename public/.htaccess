@@ -1,7 +1,3 @@
-# She Ships on GoDaddy (Apache).
-# There's one real page ("/"). Real files (assets, robots.txt, sitemap.xml)
-# are served as they are; anything else gets the site's own 404 page with a
-# true 404 status, so search engines don't index broken addresses.
 ErrorDocument 404 /404.html
 DirectorySlash Off
 
@@ -9,25 +5,17 @@ DirectorySlash Off
   RewriteEngine On
   RewriteBase /
 
-  # sheships.tech / sheships.net / www -> https://sheships.dev (one site, one address)
-  RewriteCond %{HTTP_HOST} !^sheships\.dev$ [NC]
+  RewriteCond %{HTTP_HOST} !^(www\.)?sheships\.dev$ [NC]
   RewriteCond %{HTTP_HOST} sheships\. [NC]
   RewriteRule ^ https://sheships.dev%{REQUEST_URI} [L,R=301]
 
-  # /faq is its own prebuilt page (faq/index.html). Serve it at /faq with
-  # no trailing-slash redirect, to match its canonical address.
   RewriteRule ^faq/?$ faq/index.html [L]
 
-  # This host ignores ErrorDocument for this site, so send unknown addresses
-  # to the 404 page directly. It carries <meta name="robots" content="noindex">,
-  # so search engines still won't index broken addresses.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ 404.html [L]
 </IfModule>
 
-# Built files have unique names, so they can be cached for a long time.
-# index.html itself is never cached, so a new upload shows up right away.
 <IfModule mod_headers.c>
   <FilesMatch "\.(js|css|png|svg|woff2?)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
