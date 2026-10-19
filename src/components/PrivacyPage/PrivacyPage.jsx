@@ -8,7 +8,7 @@ const TITLE = 'Privacy Policy | She Ships'
 const DESCRIPTION =
   'How She Ships and ManaSota Tech Network handle information on sheships.dev: analytics, cookies, Luma event registration and your privacy choices.'
 const UPDATED = 'October 19, 2026'
-const PRIVACY_EMAIL = 'hello@manasotatech.org'
+const PRIVACY_EMAIL = 'privacy@manasotatech.org'
 const URL = 'https://sheships.dev/privacy'
 
 function setMeta(name, content, attr = 'name') {
