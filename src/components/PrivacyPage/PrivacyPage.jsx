@@ -98,38 +98,11 @@ export default function PrivacyPage() {
             </ul>
 
             <h2>Cookies</h2>
-            <div className={styles.tableWrap}>
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Cookie</th>
-                    <th scope="col">Provider</th>
-                    <th scope="col">Purpose</th>
-                    <th scope="col">Duration</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><code>_ga</code>, <code>_ga_MN380ZMSG0</code></td>
-                    <td>Google Analytics</td>
-                    <td>Distinguish visitors and sessions for aggregate statistics</td>
-                    <td>Up to 2 years</td>
-                  </tr>
-                  <tr>
-                    <td><code>_tccl_visitor</code></td>
-                    <td>GoDaddy</td>
-                    <td>Hosting performance monitoring</td>
-                    <td>Set by GoDaddy</td>
-                  </tr>
-                  <tr>
-                    <td>Luma cookies</td>
-                    <td>Luma</td>
-                    <td>Embedded event calendar and registration</td>
-                    <td>Set by Luma</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <p>
+              Google Analytics sets cookies that tell visits apart so we can see aggregate statistics.
+              They last up to 2 years. GoDaddy sets a cookie for hosting performance monitoring, and the
+              embedded Luma calendar and registration may set Luma&rsquo;s own cookies.
+            </p>
             <p>
               We do not show a cookie banner on this site. You can block or delete cookies in your browser
               settings, and you can opt out of Google Analytics with Google&rsquo;s{' '}

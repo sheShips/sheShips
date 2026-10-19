@@ -89,55 +89,11 @@
   color: var(--abyss);
 }
 
-.body code {
-  font-family: var(--font-mono);
-  font-size: 0.85em;
-  padding: 1px 6px;
-  border-radius: 6px;
-  background: rgba(20, 113, 130, 0.09);
-  color: var(--abyss);
-}
-
 .updated {
   font-size: var(--t-small);
   font-weight: 700;
   letter-spacing: 0.04em;
   color: #4a6670;
-}
-
-.tableWrap {
-  overflow-x: auto;
-  border: 1px solid rgba(17, 54, 70, 0.14);
-  border-radius: 14px;
-}
-
-.tableWrap table {
-  width: 100%;
-  min-width: 560px;
-  border-collapse: collapse;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-}
-
-.tableWrap th,
-.tableWrap td {
-  padding: 12px 14px;
-  text-align: left;
-  vertical-align: top;
-  border-bottom: 1px solid rgba(17, 54, 70, 0.1);
-}
-
-.tableWrap th {
-  font-size: var(--t-eyebrow);
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--abyss);
-  background: rgba(20, 113, 130, 0.06);
-}
-
-.tableWrap tr:last-child td {
-  border-bottom: 0;
 }
 
 .shore {
