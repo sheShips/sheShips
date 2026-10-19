@@ -10,6 +10,7 @@ DirectorySlash Off
   RewriteRule ^ https://sheships.dev%{REQUEST_URI} [L,R=301]
 
   RewriteRule ^faq/?$ faq/index.html [L]
+  RewriteRule ^privacy/?$ privacy/index.html [L]
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d

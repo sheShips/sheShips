@@ -10,6 +10,7 @@ import EventSec from './components/EventSec/EventSec'
 import Footer from './components/Footer/Footer'
 import NotFound from './components/NotFound/NotFound'
 import FaqPage from './components/FaqPage/FaqPage'
+import PrivacyPage from './components/PrivacyPage/PrivacyPage'
 
 function Home() {
   const { hash } = useLocation()
@@ -48,6 +49,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/faq" element={<FaqPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { gsap, prefersReducedMotion, revealOnScroll } from '../../lib/motion'
 import { useGsap } from '../../hooks/useGsap'
 import linkedinBug from '../../assets/linkedin-bug-white.png'
@@ -109,6 +110,9 @@ export default function Footer() {
               <a href="https://whelkworks.com" target="_blank" rel="noopener noreferrer">
                 Whelk Works
               </a>
+            </span>
+            <span className={styles.credit}>
+              <Link to="/privacy">Privacy Policy</Link>
             </span>
           </p>
         </div>

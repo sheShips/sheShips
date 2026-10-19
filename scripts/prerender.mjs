@@ -90,6 +90,15 @@ try {
   faqHtml = replaceOnce(faqHtml, /<\/head>/, `  <script type="application/ld+json" id="faq-ld-static">${faqLd}</script>\n  </head>`, '</head>')
   await write('faq/index.html', fillRoot(faqHtml, faq.markup))
 
+  const privacy = await render(context, '/privacy')
+  let privacyHtml = setTitle(template, privacy.title)
+  privacyHtml = setMetaContent(privacyHtml, 'name', 'description', privacy.description)
+  privacyHtml = setMetaContent(privacyHtml, 'property', 'og:url', privacy.ogUrl)
+  privacyHtml = setMetaContent(privacyHtml, 'property', 'og:title', privacy.ogTitle)
+  privacyHtml = setMetaContent(privacyHtml, 'property', 'og:description', privacy.ogDescription)
+  privacyHtml = replaceOnce(privacyHtml, /(<link rel="canonical" href=")[^"]*(")/, `$1${escapeHtml(privacy.canonical)}$2`, 'canonical')
+  await write('privacy/index.html', fillRoot(privacyHtml, privacy.markup))
+
   const missing = await render(context, '/this-page-does-not-exist')
   let missingHtml = setTitle(template, 'Page not found | She Ships')
   missingHtml = replaceOnce(missingHtml, /\s*<link rel="canonical"[^>]*>/, '', 'canonical')
