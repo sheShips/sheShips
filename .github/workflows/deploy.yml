@@ -46,3 +46,12 @@ jobs:
             **/.git*/**
             .well-known/**
             cgi-bin/**
+      - name: Notify IndexNow
+        continue-on-error: true
+        env:
+          INDEXNOW_KEY: b3326a7d373ba7f2208fbbbdcfebffec
+        run: |
+          urls=$(grep -o '<loc>[^<]*' public/sitemap.xml | sed 's/<loc>//' | jq -R . | jq -s -c .)
+          body=$(jq -n -c --arg key "$INDEXNOW_KEY" --argjson urls "$urls" '{host:"sheships.dev",key:$key,keyLocation:("https://sheships.dev/"+$key+".txt"),urlList:$urls}')
+          echo "$body"
+          curl -sS -X POST https://api.indexnow.org/indexnow -H 'Content-Type: application/json; charset=utf-8' -d "$body" -o /dev/null -w 'IndexNow HTTP %{http_code}\n'
