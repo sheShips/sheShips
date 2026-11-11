@@ -1,4 +1,4 @@
-ErrorDocument 404 /404.html
+ErrorDocument 404 /404.php
 DirectorySlash Off
 
 <IfModule mod_rewrite.c>
@@ -14,7 +14,7 @@ DirectorySlash Off
 
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^ 404.html [L]
+  RewriteRule ^ 404.php [L]
 </IfModule>
 
 <IfModule mod_headers.c>
