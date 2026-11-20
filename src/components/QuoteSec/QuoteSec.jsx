@@ -8,9 +8,6 @@ export default function QuoteSec() {
 
   useGsap(scope, () => {
     if (prefersReducedMotion()) return
-    // this one drifts in sideways rather than rising, so it reads as a
-    // beat between sections instead of another card. It sits on the
-    // right, so it drifts in from the right.
     gsap.from(`.${styles.quote}`, {
       x: 40,
       opacity: 0,
@@ -18,7 +15,6 @@ export default function QuoteSec() {
       ease: 'power3.out',
       scrollTrigger: { trigger: `.${styles.band}`, start: 'top 78%', once: true },
     })
-    // the rule draws in from the right, then the subtitle settles in under it
     gsap.from(`.${styles.rule}`, {
       scaleX: 0,
       transformOrigin: '100% 50%',
@@ -45,10 +41,9 @@ export default function QuoteSec() {
             Learn. Launch. Lift.
           </blockquote>
           <span className={styles.rule} aria-hidden="true" />
-          {/* two set lines on wide screens (top one longer); wraps naturally on phones */}
           <p className={styles.sub}>
             <span className={styles.subLine}>
-              A safe harbor for women in tech across the Gulf Coast. First commit or fortieth,
+              A safe harbor for women in tech in Manatee and Sarasota counties. First commit or fortieth,
               there&rsquo;s a seat for you here.
             </span>{' '}
             <span className={styles.subLine}>

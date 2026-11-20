@@ -5,10 +5,6 @@ import { nightFactor } from '../../lib/sky'
 import logo from '../../assets/logo.png'
 import styles from './LandingPage.module.css'
 
-/* Four bands, back to front. `speed` drives the scroll parallax.
-   The curves are evenly rolling waves (generated, 2.5 crests across),
-   each one phase-shifted so its crests sit between the crests of the
-   band behind it, like layered surf. */
 const WAVES = [
   {
     key: 'wave1',
@@ -48,7 +44,6 @@ export default function LandingPage() {
   const scope = useRef(null)
   const canvasRef = useRef(null)
 
-  /* ---------------- starfield ---------------- */
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return undefined
@@ -60,14 +55,10 @@ export default function LandingPage() {
     let frame
     let clock
 
-    /* How dark it is right now. `target` follows the real sun (checked
-       every minute); `night` eases toward it so dusk fades in rather
-       than snapping. Daytime keeps a faint handful so the sky never
-       looks empty. */
     let target = nightFactor()
     let night = target
-    const visibleShare = () => 0.25 + 0.75 * night   // how many stars are out
-    const brightness = () => 0.5 + 0.5 * night        // how bright they are
+    const visibleShare = () => 0.25 + 0.75 * night
+    const brightness = () => 0.5 + 0.5 * night
 
     const size = () => {
       const rect = canvas.getBoundingClientRect()
@@ -76,16 +67,13 @@ export default function LandingPage() {
       const count = Math.round((rect.width * rect.height) / 7000)
       points = Array.from({ length: count }, () => ({
         x: Math.random() * rect.width,
-        // squared distribution keeps them near the top of the sky
         y: Math.random() ** 2.1 * rect.height * 0.62,
         r: Math.random() * 1.1 + 0.25,
         a: Math.random() * 0.55 + 0.15,
         tw: Math.random() * 0.02 + 0.004,
         p: Math.random() * Math.PI * 2,
-        // rank: the brightest stars come out first at dusk
         k: Math.random(),
       }))
-      // brighter stars get the low ranks
       points.forEach((s) => { s.k = s.k * 0.6 + (1 - s.a / 0.7) * 0.4 })
       draw(0)
     }
@@ -97,7 +85,6 @@ export default function LandingPage() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, rect.width, rect.height)
       points.forEach((s, i) => {
-        // soft edge so stars fade in one by one as `share` rises
         const out = Math.min(Math.max((share - s.k) * 10, 0), 1)
         if (out <= 0) return
         const twinkle = reduced ? 1 : 0.6 + 0.4 * Math.sin(t * s.tw + s.p)
@@ -127,7 +114,6 @@ export default function LandingPage() {
     size()
     window.addEventListener('resize', size)
     clock = window.setInterval(tick, 60000)
-    // coming back to a tab left open for hours should show the right sky
     document.addEventListener('visibilitychange', tick)
     if (!reduced) frame = requestAnimationFrame(loop)
 
@@ -139,15 +125,12 @@ export default function LandingPage() {
     }
   }, [])
 
-  /* ---------------- entrance + parallax ---------------- */
   useGsap(scope, () => {
     if (prefersReducedMotion()) return
 
     let stopSailboat = () => {}
     let bob = null
 
-    // no point bobbing a boat nobody can see: pause it once the hero
-    // has scrolled out of view, resume when it comes back
     ScrollTrigger.create({
       trigger: scope.current,
       start: 'top bottom',
@@ -164,11 +147,6 @@ export default function LandingPage() {
       .from(`.${styles.sunGlow}, .${styles.glint}, .${styles.halo}`, { opacity: 0, duration: 1.4 }, 0)
       .from(`.${styles.wave}`, { yPercent: 55, opacity: 0, duration: 1.3, stagger: 0.09 }, 0.1)
 
-    /* The sail-in. Four tweens run together on the same element and
-       blend into one motion: a long decelerating descent, a lateral
-       tack that drifts left-right-centre, a heel that leans into each
-       turn, and a slow scale-up for distance. No bounce — it glides
-       down and settles onto its waterline. */
     const fall = Math.max(window.innerHeight * 0.62, 420)
     const sail = gsap.timeline()
 
@@ -197,7 +175,6 @@ export default function LandingPage() {
           repeat: -1,
         })
 
-        // interaction switches on only now, after the sail-in and first bob
         stopSailboat = enableSailboat(
           scope.current.querySelector(`.${styles.boat}`),
           scope.current,
@@ -205,11 +182,6 @@ export default function LandingPage() {
         )
       })
 
-    /* one soft ripple as it meets the water, not an impact splash.
-       immediateRender: false keeps the rings hidden until the logo
-       actually lands (otherwise fromTo paints them at 0.42 the moment
-       the timeline is built, sitting above the headline for ~2.5s).
-       They then fade up quickly and out slowly, so there's no pop. */
     ripples.forEach((ripple, i) => {
       const at = 2.35 + i * 0.06
       const duration = 1.1 + i * 0.25
@@ -235,22 +207,14 @@ export default function LandingPage() {
 
     intro.add(sail, 0.25)
     intro.from(`.${styles.heroCopy} > *`, { y: 26, opacity: 0, duration: 0.9, stagger: 0.12 }, '-=1.9')
-    // the striped sun-path on the water only plays during the sail-in; once
-    // the copy arrives it fades out so no orange lines sit behind the text
     intro.to(`.${styles.glint}`, { opacity: 0, duration: 0.9, ease: 'sine.inOut' }, '<+0.25')
 
-    /* parallax — every layer drifts at its own rate */
     const track = {
       trigger: `.${styles.hero}`,
       start: 'top top',
       end: 'bottom top',
     }
 
-    /* Parallax uses fromTo with explicit resting values and
-       immediateRender: false. A plain .to() records its start values when
-       it's created, which is mid-intro (waves still pushed down 55%, glows
-       still at opacity 0), so the first scroll used to snap everything back
-       to those intro start states. */
     WAVES.forEach((wave) => {
       gsap.fromTo(
         `.${styles[wave.key]}`,
@@ -264,7 +228,6 @@ export default function LandingPage() {
       )
     })
 
-    // (the glint has no scroll tween any more: it fades out after the intro)
     gsap.fromTo(
       `.${styles.sunGlow}`,
       { yPercent: 0, opacity: 1 },
@@ -288,7 +251,6 @@ export default function LandingPage() {
       scrollTrigger: { ...track, scrub: 0.5 },
     })
 
-    // removes the sailboat's pointer listeners on unmount
     return () => {
       stopSailboat()
       bob?.kill()
@@ -326,12 +288,12 @@ export default function LandingPage() {
         </div>
 
         <div className={styles.heroCopy}>
-          <p className="eyebrow eyebrow-center">Southwest Florida</p>
+          <p className="eyebrow eyebrow-center">Manatee and Sarasota counties</p>
           <h1 className="lead">
             Nobody ships <em>alone</em>.
           </h1>
           <p className={styles.heroSub}>
-            A group for female devs around Southwest Florida. Just starting out or years in, pull
+            A group for female devs around Bradenton, Lakewood Ranch and Sarasota. Just starting out or years in, pull
             up a chair. Bring the bug you&rsquo;ve been staring at all week and the project you
             haven&rsquo;t shown anyone yet. Someone here has been there, and she&rsquo;ll stick
             around to celebrate when it finally works.

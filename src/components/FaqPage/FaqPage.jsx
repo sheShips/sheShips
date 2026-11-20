@@ -7,9 +7,9 @@ import { useGsap } from '../../hooks/useGsap'
 import { FAQS, CONTACTS, answerText } from './faq'
 import styles from './FaqPage.module.css'
 
-const TITLE = 'FAQ | She Ships, Women in Tech in Sarasota, Tampa & St. Pete'
+const TITLE = 'FAQ | She Ships, Women in Tech in Bradenton, Lakewood Ranch & Sarasota'
 const DESCRIPTION =
-  'Who can join She Ships, what it costs, how often we meet and what happens at a meetup. Answers for women in tech across Southwest Florida and Tampa Bay.'
+  'Who can join She Ships, what it costs, how often we meet and what happens at a meetup. Answers for women in tech in Manatee and Sarasota counties.'
 
 function setMeta(name, content, attr = 'name') {
   let tag = document.head.querySelector(`meta[${attr}="${name}"]`)

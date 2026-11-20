@@ -106,10 +106,10 @@ function useEventSchema(events) {
         isAccessibleForFree: true,
         location: event.location
           ? { '@type': 'Place', name: event.location, address: event.location }
-          : { '@type': 'Place', name: 'Southwest Florida' },
+          : { '@type': 'Place', name: 'Manatee and Sarasota counties' },
         organizer: { '@id': 'https://sheships.dev/#org' },
         url: event.url,
-        description: 'A free She Ships event for women in tech in Southwest Florida.',
+        description: 'A free She Ships event for women in tech in Manatee and Sarasota counties.',
       })),
     }
     const tag = document.createElement('script')
@@ -154,7 +154,7 @@ export default function EventSec({ data = feed }) {
             <p>Always free to attend. New dates go up on Luma first.</p>
           ) : (
             <p>
-              Meetups, workshops and hack days across the region: Sarasota, Fort Myers, Naples
+              Meetups, workshops and hack days across ManaSota: Bradenton, Lakewood Ranch, Sarasota
               and everywhere between. Always free to attend.
             </p>
           )}

@@ -53,7 +53,7 @@ export default function Footer() {
           She <em>Ships</em>
         </p>
         <p style={{ maxWidth: '42ch' }}>
-          Female developers, up and down the Southwest Florida coast.
+          Female developers across Manatee and Sarasota counties.
         </p>
 
         <nav className={styles.socials} aria-label="Find She Ships online">

@@ -3,8 +3,6 @@ import { revealOnScroll } from '../../lib/motion'
 import { useGsap } from '../../hooks/useGsap'
 import styles from './AboutSec.module.css'
 
-/* Icons are drawn from the club's own world: a compass rose, a sail,
-   a crew, and a code chevron. */
 const PILLARS = [
   {
     id: 'compass',
@@ -84,7 +82,7 @@ export default function AboutSec() {
           <p className="eyebrow">About the club</p>
           <h2 className="lead">We&rsquo;re starting the group we wished already existed.</h2>
           <p>
-            There are female devs building software all over this coast, mostly in isolation. She
+            There are female devs building software all over ManaSota, mostly in isolation. She
             Ships is an attempt to fix that. Four things we&rsquo;re after:
           </p>
         </div>

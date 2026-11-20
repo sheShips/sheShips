@@ -46,7 +46,7 @@ export const FAQS = [
     id: 'areas',
     q: 'What areas do you cover?',
     answer: [
-      'Southwest Florida and the Tampa Bay area: Sarasota, Manatee, Charlotte and Lee counties, plus Tampa and St. Pete. Events move around the region.',
+      'Manatee and Sarasota counties. Events rotate around Bradenton, Lakewood Ranch and Sarasota, with others in Venice, Osprey and Nokomis.',
     ],
   },
   {
