@@ -7,8 +7,8 @@ import { LUMA } from '../../lib/luma'
 import styles from './Footer.module.css'
 
 
-const LINKEDIN_URL = 'https://www.linkedin.com/groups/33350020/'
-const INSTAGRAM_URL = 'https://www.instagram.com/sarasotasheships/'
+const LINKEDIN_URL = 'https://www.linkedin.com/showcase/manasota-women-developers/'
+const INSTAGRAM_URL = 'https://www.instagram.com/sheships.dev/'
 
 export default function Footer() {
   const scope = useRef(null)
@@ -79,7 +79,7 @@ export default function Footer() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            title="@sarasotasheships"
+            title="@sheships.dev"
           >
             <span className={styles.dot}>
               <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor"
