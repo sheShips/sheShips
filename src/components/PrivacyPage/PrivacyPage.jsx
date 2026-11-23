@@ -7,7 +7,7 @@ import styles from './PrivacyPage.module.css'
 const TITLE = 'Privacy Policy | She Ships'
 const DESCRIPTION =
   'How She Ships and ManaSota Tech Network handle information on sheships.dev: analytics, cookies, Luma event registration and your privacy choices.'
-const UPDATED = 'October 19, 2026'
+const UPDATED = 'November 23, 2026'
 const PRIVACY_EMAIL = 'privacy@manasotatech.org'
 const URL = 'https://sheships.dev/privacy'
 
@@ -54,15 +54,15 @@ export default function PrivacyPage() {
         <div className={`wrap ${styles.inner}`}>
           <header className={styles.head}>
             <p className={styles.eyebrow}>Legal</p>
-            <h1 className={styles.title}>Privacy Policy</h1>
+            <h1 className={styles.title}>Privacy policy</h1>
           </header>
           <article className={styles.body}>
             <p className={styles.updated}>Last updated: {UPDATED}</p>
             <p>
-              She Ships is a women in tech community group of ManaSota Tech Network (&ldquo;we,&rdquo;
-              &ldquo;us&rdquo;), meeting in Sarasota, Tampa, and St. Pete. ManaSota Tech Network operates
-              this site and is responsible for the information described here. ManaSota Tech Network is
-              organized by Michael Quirk. Securipolis LLC handles privacy requests on its behalf.
+              She Ships is a women in tech community group of ManaSota Tech Network ("we," "us"),
+              serving Manatee and Sarasota counties. ManaSota Tech Network operates this site and is
+              responsible for the information described here. ManaSota Tech Network is organized by
+              Michael Quirk. Securipolis LLC handles privacy requests on its behalf.
             </p>
 
             <h2>What we collect</h2>
@@ -73,7 +73,7 @@ export default function PrivacyPage() {
               with us as the event host.
             </p>
 
-            <h2>Information collected automatically</h2>
+            <h3>Information collected automatically</h3>
             <ul>
               <li>
                 <strong>Hosting logs:</strong> your IP address, browser type, pages viewed, and time
@@ -84,6 +84,11 @@ export default function PrivacyPage() {
                 that referred you, device type, and approximate location derived from your IP address.
               </li>
               <li>
+                <strong>Social media analytics:</strong> Metricool, the tool we use to schedule and
+                measure our social media posts, records visits to our site so we can see which posts
+                bring visitors.
+              </li>
+              <li>
                 <strong>Performance monitoring:</strong> our hosting provider, GoDaddy, measures how
                 quickly pages load.
               </li>
@@ -92,24 +97,25 @@ export default function PrivacyPage() {
                 address to Google when the page loads.
               </li>
               <li>
-                <strong>Luma event widgets:</strong> our events calendar and the Register button are
-                embedded from Luma, so Luma&rsquo;s code runs on our homepage and may set its own cookies.
+                <strong>Luma event widgets:</strong> our events calendar and Register buttons are embedded
+                from Luma, so Luma's code runs on our pages and may set its own cookies.
               </li>
             </ul>
 
             <h2>Cookies</h2>
             <p>
               Google Analytics sets cookies that tell visits apart so we can see aggregate statistics.
-              They last up to 2 years. GoDaddy sets a cookie for hosting performance monitoring, and the
-              embedded Luma calendar and registration may set Luma&rsquo;s own cookies.
+              They last up to 2 years. Metricool's tracker measures visits for our social media
+              reporting. GoDaddy sets a cookie for hosting performance monitoring, and the embedded Luma
+              calendar and registration may set Luma's own cookies.
             </p>
             <p>
               We do not show a cookie banner on this site. You can block or delete cookies in your browser
-              settings, and you can opt out of Google Analytics with Google&rsquo;s{' '}
+              settings, and you can opt out of Google Analytics with Google's opt-out browser add-on (
               <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">
-                opt-out browser add-on
+                tools.google.com/dlpage/gaoptout
               </a>
-              .
+              ).
             </p>
 
             <h2>How we use your information</h2>
@@ -118,6 +124,7 @@ export default function PrivacyPage() {
                 To understand in aggregate how many people visit, which pages they read, and how they found
                 us, so we can plan events.
               </li>
+              <li>To see which of our social media posts bring visitors to this site.</li>
               <li>To manage event registrations and send event updates to people who registered on Luma.</li>
             </ul>
             <p>
@@ -130,6 +137,10 @@ export default function PrivacyPage() {
               <li><strong>Luma:</strong> event registration, calendar, and attendee communication.</li>
               <li><strong>Google Analytics:</strong> website analytics.</li>
               <li><strong>Google Fonts:</strong> web fonts.</li>
+              <li>
+                <strong>Metricool:</strong> social media scheduling and measurement, including visit
+                measurement on this site.
+              </li>
               <li><strong>GoDaddy:</strong> website hosting and performance monitoring.</li>
             </ul>
             <p>We may disclose information if the law requires it.</p>
@@ -137,7 +148,11 @@ export default function PrivacyPage() {
             <h2>How long we keep it</h2>
             <ul>
               <li><strong>Google Analytics:</strong> user-level data is kept for 14 months.</li>
-              <li><strong>Event registrations:</strong> kept in Luma until we delete them.</li>
+              <li>
+                <strong>Event registrations:</strong> kept in Luma. We keep them as long as needed to run
+                events and delete them if you ask, and Luma keeps data under its own retention policy.
+              </li>
+              <li><strong>Metricool:</strong> kept by Metricool under its own retention schedule.</li>
               <li><strong>Hosting logs:</strong> kept by GoDaddy under its own retention schedule.</li>
             </ul>
 
@@ -155,7 +170,7 @@ export default function PrivacyPage() {
             </p>
 
             <h2>Changes</h2>
-            <p>When we change this policy, we update the date above.</p>
+            <p>When we change this policy, we update the date above. Material changes will be noted on this page.</p>
 
             <h2>Contact</h2>
             <p>
